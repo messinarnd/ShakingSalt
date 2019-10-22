@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  Button
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
+    Button
 } from 'react-native';
 import { getFoodDetailsEndpoint, axiosConfig } from '../../services/USDAFoodService';
+import { ListItem } from 'react-native-elements';
 const axios = require("axios");
 
 export default SearchResultsPage = (props) => {
@@ -27,26 +28,38 @@ export default SearchResultsPage = (props) => {
             })
     }
 
-    return(
+    return (
         <View style={styles.container}>
             <ScrollView style={styles.container}
-            contentContainerStyle={styles.contentContainer}>
-                <View style={styles.welcomeContainer}>
-                    <Text>Hello, Search Results!</Text>
-                    {/* This is the loop that will display the list of foodItems */}
+                contentContainerStyle={styles.contentContainer}>
+                <View>
                     {
                         foodItems.map((foodItem, index) => {
-                            return(
-                                <Button 
-                                    key={foodItem.fdcId}
-                                    title={`${foodItem.brandOwner} - full name?`}
-                                    onPress={() => getFoodDetails(foodItem.fdcId)} />
-                                    // Not sure where to get the full name only the brand name
-                            )
-                            
-                        })
+                            if (foodItem.brandOwner == null) {
+                                return (
+                                    <ListItem
+                                        key={foodItem.fdcId}
+                                        title={`${foodItem.description} (${foodItem.score})`}
+                                        rightSubtitle={"Sodium Level Placeholder"}
+                                        onPress={() => alert('TODO: Redirect to detail page')} // TODO: Redirect to detail page
+                                        bottomDivider
+                                    />
+                                )
+                            } else {
+                                return (
+                                    <ListItem
+                                        key={foodItem.fdcId}
+                                        title={`${foodItem.description} - ${foodItem.brandOwner} (${foodItem.score})`}
+                                        rightSubtitle={"Sodium Level Placeholder"}
+                                        onPress={() => alert('TODO: Redirect to detail page')} // TODO: Redirect to detail page
+                                        bottomDivider
+                                    />
+                                )
+                            }
+
+                        }
+                        )
                     }
-                    
                 </View>
             </ScrollView>
         </View>
@@ -59,15 +72,15 @@ SearchResultsPage.navigationOptions = {
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      backgroundColor: '#fff',
+        flex: 1,
+        backgroundColor: '#fff',
     },
     contentContainer: {
-      paddingTop: 30,
+        paddingTop: 30,
     },
     welcomeContainer: {
-      alignItems: 'center',
-      marginTop: 10,
-      marginBottom: 20,
+        alignItems: 'center',
+        marginTop: 10,
+        marginBottom: 20,
     }
-  });
+});

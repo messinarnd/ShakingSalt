@@ -5,17 +5,31 @@ import {
   Text,
   View,
 } from 'react-native';
-
+import { ListItem } from 'react-native-elements';
+const loggedItems = [                  // TODO: Populate this list with search as we go
+  { name: "Cheese", subtitle: "250mg" }, 
+  { name: "Ramen", subtitle: "700mg"  }, 
+  { name: "Turkey", subtitle: "300mg" }] 
 
 export default function MyLogsPage() {
   return (
     <View style={styles.container}>
-        <ScrollView style={styles.container}
+      <ScrollView style={styles.container}
         contentContainerStyle={styles.contentContainer}>
-            <View style={styles.welcomeContainer}>
-                <Text>Hello, Logs!</Text>
-            </View>
-        </ScrollView>
+        <View>
+          {
+            loggedItems.map((l, i) => (
+              <ListItem
+                key={i}
+                title={l.name}
+                rightSubtitle={l.subtitle}
+                onPress={handleClick}
+                bottomDivider
+              />
+            ))
+          }
+        </View>
+      </ScrollView>
     </View>
   );
 }

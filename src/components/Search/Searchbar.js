@@ -1,20 +1,32 @@
 import React, {Component} from 'react';
 import { TextInput } from 'react-native';
+import { SearchBar } from 'react-native-elements';
 
+export default class Searchbar extends React.Component {
 
-export default Searchbar = (props) => {
+  state = {
+    search: '',
+  };
 
   searchInSearchPage = (searchEvent) => {
-    props.searchItem(searchEvent["nativeEvent"]["text"]);
+    this.props.searchItem(searchEvent["nativeEvent"]["text"]);
   }
 
-  return (
-    <TextInput
-      placeholder="Type Here..."
-      // onChangeText={this.updateSearch} - this can be used if we implement an in place search list
-      // same screen/in place search list can be done if we can get all food data to a firebase database and clean it
-      onSubmitEditing={this.searchInSearchPage}
-      returnKeyType="search"
-    />
-  )
+  updateSearch = search => {
+    this.setState({ search });
+  }
+
+  render() {
+    const { search } = this.state;
+
+    return (
+      <SearchBar
+        placeholder="Type Here..."
+        containerStyle="TextInput"
+        onChangeText={this.updateSearch}
+        onSubmitEditing={this.searchInSearchPage}
+        value={search}
+      />
+    );
+  }
 }
