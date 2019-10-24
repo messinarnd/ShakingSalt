@@ -12,13 +12,17 @@ const axios = require("axios");
 
 export default SearchResultsPage = (props) => {
     // Get the foodItems array that was passed from SearchResultsPage
-    const { params } = props.navigation.state;
+    const { navigation } = props
+    const { params } = navigation.state;
     const foodItems = params.foodItems;
 
     getFoodDetails = (fdcId) => {
         axios.get(getFoodDetailsEndpoint(fdcId), axiosConfig)
             .then((response) => {
                 console.log("response data: ", response.data);
+                navigation.navigate('FoodDetailsTabsPage', {
+                    foodDetails: response.data
+                })
                 // Need to add navigation to a new page called FoodDetailsPage
                 // Look at SearchPage for how this can be done
                 // Think we only need to pass in response.data.foodNutrients not all of response.data
@@ -41,7 +45,7 @@ export default SearchResultsPage = (props) => {
                                         key={foodItem.fdcId}
                                         title={`${foodItem.description} (${foodItem.score})`}
                                         rightSubtitle={"Sodium Level Placeholder"}
-                                        onPress={() => alert('TODO: Redirect to detail page')} // TODO: Redirect to detail page
+                                        onPress={() => getFoodDetails(foodItem.fdcId)}
                                         bottomDivider
                                     />
                                 )
@@ -51,7 +55,7 @@ export default SearchResultsPage = (props) => {
                                         key={foodItem.fdcId}
                                         title={`${foodItem.description} - ${foodItem.brandOwner} (${foodItem.score})`}
                                         rightSubtitle={"Sodium Level Placeholder"}
-                                        onPress={() => alert('TODO: Redirect to detail page')} // TODO: Redirect to detail page
+                                        onPress={() => getFoodDetails(foodItem.fdcId)}
                                         bottomDivider
                                     />
                                 )

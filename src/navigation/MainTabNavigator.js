@@ -7,6 +7,7 @@ import TabBarIcon from '../components/MainTabBar/TabBarIcon';
 import SearchPage from "../components/Search/SearchPage";
 import MyLogsPage from "../components/MyLogs/MyLogsPage";
 import SearchResultsPage from "../components/SearchResults/SearchResultsPage";
+import FoodDetailsTabsPage from "../components/FoodDetailsTabs/FoodDetailsTabsPage";
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -18,6 +19,7 @@ const SearchStack = createStackNavigator(
   {
     Search: SearchPage,
     SearchResultsPage: SearchResultsPage,
+    FoodDetailsTabsPage: FoodDetailsTabsPage
     // Add any other screens that relate to this stack here
     // Food details page will be one once we implement that
     // Adding here allows 'navigation' to be accessed from the props in that component
