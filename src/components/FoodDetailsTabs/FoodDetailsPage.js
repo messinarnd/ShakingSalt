@@ -8,10 +8,12 @@ import {
   TextInput,
   Picker
 } from 'react-native';
+import { AsyncStorage } from 'react-native';
+
+const STORAGE_KEY = 'LOG_ITEMS_STORAGE' // Don't put it in Constants cause it doesn't get initialized before call to log DB cause react suX
 
 // import { searchResultsEndpoint, axiosConfig } from "../../services/USDAFoodService";
 // const axios = require("axios");
-
 
 export default FoodDetailsPage = (props) => {
   // Probably need to add redux for global state so we know what the search term was for alternatives
@@ -20,6 +22,52 @@ export default FoodDetailsPage = (props) => {
   const {foodDetails} = props
   Object.freeze(foodDetails) // Not really sure if this is needed since using the spread operators (...) but doesn't hurt
 
+  // Function for logging food info when user clicks on the log item button
+  storeData = async () => {
+    // await AsyncStorage.clear(); // FOR DEBUG ONLY - SHOULD BE COMMENTED
+    console.log("Logging new item..");
+    try {
+      // Making sure allLogs array is initialized in the beginning
+      const existingLogs = await AsyncStorage.getItem(STORAGE_KEY);
+      let allLogs = JSON.parse(existingLogs);
+      if (!allLogs) {
+        allLogs = []
+      }
+
+      // Creating this log object based on user selection
+      // Add more field info for log (and then display it in MyLogsPage) as necessary
+      var item = {
+        logTimeStamp : getCurrentDateTime(),
+        logFdcId : foodDetails.fdcId,
+        logBrandedFoodCategory : foodDetails.brandedFoodCategory,
+        logBrandOwner : foodDetails.brandOwner,
+        logServingSize : servingSize,
+        logServingAmount : servingAmount
+      };
+
+      // Adding the new item to the JSON array
+      allLogs.push(item);
+
+      console.log('Current log DB:')
+      console.log(allLogs);
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(allLogs)).then(() => alert('Logged!'));
+      // TODO: Pop navigation stack (return to home page)
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  // Helper function for getting current timestamp for logging
+  getCurrentDateTime = () => {
+    var day = new Date().getDate();
+    var month = new Date().getMonth() + 1;
+    var year = new Date().getFullYear();
+    var hours = new Date().getHours();
+    var min = new Date().getMinutes();
+    var sec = new Date().getSeconds();
+    var formattedDateTime = month + '/' + day + '/' + year + ' ' + hours + ':' + min + ':' + sec;
+    return formattedDateTime;
+  };
 
   const [nutrientsObj, setNutrientsObj] = useState({...foodDetails.labelNutrients})
   console.log("og nutrients: ", nutrientsObj)
@@ -31,6 +79,7 @@ export default FoodDetailsPage = (props) => {
     let factor = 0;
     // One serving size is actually based on 1 ounce for the Belgioioso cheese (it's romano) and triad beer cheese
     // bread, rye doesn't even have labelNutrients....
+    // TODO: figure out a consistent way to get the nutrients and then update the factor multipliers here
     if (servingSize == "g") {
       factor = ((1 * servingAmount) / 100)
     } else if (servingSize == "oz") {
@@ -63,7 +112,7 @@ export default FoodDetailsPage = (props) => {
               <TextInput
                 placeholder="Enter amount eaten..."
                 keyboardType="numeric"
-                onChangeText={(text) => {setServingAmount(text ? text : 0); setTest1(7); setTest2()}}
+                onChangeText={(text) => {setServingAmount(text ? text : 0);}}
               />
               <Picker
                 selectedValue={servingSize}
@@ -75,6 +124,10 @@ export default FoodDetailsPage = (props) => {
                 <Picker.Item label="lbs" value="lbs" />
                 <Picker.Item label="mg" value="mg" />
               </Picker>
+              <Button
+                onPress={storeData}
+                title="Log Item"
+              />
               {/* Put these texts here as spacer so the picker wouldn't overlap */}
               {/* TODO: Get rid of the spacers and use css like a normal human being... */}
               {/* TODO: Change several rows of text to a table or something nicer */}
