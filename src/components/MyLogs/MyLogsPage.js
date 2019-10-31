@@ -109,12 +109,12 @@ export default class MyLogsPage extends React.Component {
                 }
                 renderItem={({item}) =>
                   <View>
-                    <Text style={styles.textViewContainer} >{'Timestamp = ' + item.logTimeStamp}</Text>
-                    <Text style={styles.textViewContainer} >{'fdcId = ' + item.logFdcId}</Text>
-                    <Text style={styles.textViewContainer} >{'Food Category = ' + item.logBrandedFoodCategory}</Text>
-                    <Text style={styles.textViewContainer} >{'Brand Owner = ' + item.logBrandOwner}</Text>
-                    <Text style={styles.textViewContainer} >{'Serving Size = ' + item.logServingSize}</Text>
-                    <Text style={styles.textViewContainer} >{'Serving Amount = ' + item.logServingAmount}</Text>
+                    <ListItem title={"Timestamp: "} rightSubtitle={item.logTimeStamp} />
+                    <ListItem title={"fdcId: "} rightSubtitle={item.logFdcId} />
+                    <ListItem title={"Food Category: "} rightSubtitle={item.logBrandedFoodCategory} />
+                    <ListItem title={"Brand Owner: "} rightSubtitle={item.logBrandOwner} />
+                    <ListItem title={"Serving Size: "} rightSubtitle={item.logServingSize} />
+                    <ListItem title={"Serving Amount: "} rightSubtitle={item.logServingAmount} />
                   </View>
                 }    
                 keyExtractor={(item, index) => index.toString()}

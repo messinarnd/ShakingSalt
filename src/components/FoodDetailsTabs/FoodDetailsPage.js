@@ -6,12 +6,14 @@ import {
   View,
   Button,
   TextInput,
+  Row,
   Picker
 } from 'react-native';
+import { Card, ListItem, Overlay } from 'react-native-elements'
 import { AsyncStorage } from 'react-native';
 
 const STORAGE_KEY = 'LOG_ITEMS_STORAGE' // Don't put it in Constants cause it doesn't get initialized before call to log DB cause react suX
-
+var nutritionVisible = false;
 // import { searchResultsEndpoint, axiosConfig } from "../../services/USDAFoodService";
 // const axios = require("axios");
 
@@ -19,7 +21,7 @@ export default FoodDetailsPage = (props) => {
   // Probably need to add redux for global state so we know what the search term was for alternatives
   // Or maybe if they search 'cheese' but click on 'cheddar cheese' then the alternatives should search for cheddar
 
-  const {foodDetails} = props
+  const { foodDetails } = props
   Object.freeze(foodDetails) // Not really sure if this is needed since using the spread operators (...) but doesn't hurt
 
   // Function for logging food info when user clicks on the log item button
@@ -37,12 +39,12 @@ export default FoodDetailsPage = (props) => {
       // Creating this log object based on user selection
       // Add more field info for log (and then display it in MyLogsPage) as necessary
       var item = {
-        logTimeStamp : getCurrentDateTime(),
-        logFdcId : foodDetails.fdcId,
-        logBrandedFoodCategory : foodDetails.brandedFoodCategory,
-        logBrandOwner : foodDetails.brandOwner,
-        logServingSize : servingSize,
-        logServingAmount : servingAmount
+        logTimeStamp: getCurrentDateTime(),
+        logFdcId: foodDetails.fdcId,
+        logBrandedFoodCategory: foodDetails.brandedFoodCategory,
+        logBrandOwner: foodDetails.brandOwner,
+        logServingSize: servingSize,
+        logServingAmount: servingAmount
       };
 
       // Adding the new item to the JSON array
@@ -69,7 +71,7 @@ export default FoodDetailsPage = (props) => {
     return formattedDateTime;
   };
 
-  const [nutrientsObj, setNutrientsObj] = useState({...foodDetails.labelNutrients})
+  const [nutrientsObj, setNutrientsObj] = useState({ ...foodDetails.labelNutrients })
   console.log("og nutrients: ", nutrientsObj)
 
   const [servingSize, setServingSize] = useState("g")
@@ -94,7 +96,7 @@ export default FoodDetailsPage = (props) => {
   }, [servingSize, servingAmount])
 
   updateAllFoodNutrients = (factor) => {
-    let nutrientsObjCopy = {...foodDetails.labelNutrients}
+    let nutrientsObjCopy = { ...foodDetails.labelNutrients }
     let newNutrientObj = Object.keys(nutrientsObjCopy).reduce((obj, nutrientName) => {
       obj[nutrientName] = {}
       obj[nutrientName]["value"] = nutrientsObjCopy[nutrientName]["value"] * factor
@@ -102,57 +104,109 @@ export default FoodDetailsPage = (props) => {
     }, {})
     setNutrientsObj(newNutrientObj)
   }
-
+  console.log("IS VISIBLE: " + nutritionVisible);
   return (
     <View style={styles.container}>
+      <Overlay 
+        isVisible={nutritionVisible} 
+        onBackdropPress={() => {
+        nutritionVisible = false
+        // TODO: Reload 
+        }}>
+        {Object.keys(nutrientsObj).map((nutrientName, index) => {
+          if (nutrientName != "calories" || nutrientName != "sodium") {
+            return (<ListItem title={nutrientName} rightSubtitle={nutrientsObj[nutrientName]["value"]}/>)
+          }
+        })}
+      </Overlay>
       <ScrollView style={styles.container}
-      contentContainerStyle={styles.contentContainer}>
-          <View style={styles.welcomeContainer}>
-              <Text>{foodDetails.description} - {foodDetails.brandOwner}</Text>
-              <TextInput
-                placeholder="Enter amount eaten..."
-                keyboardType="numeric"
-                onChangeText={(text) => {setServingAmount(text ? text : 0);}}
-              />
-              <Picker
-                selectedValue={servingSize}
-                style={{height: 50, width: 100}}
-                onValueChange={(itemValue, itemIndex) => {setServingSize(itemValue)}}
-              >
-                <Picker.Item label="g" value="g" />
-                <Picker.Item label="oz" value="oz" />
-                <Picker.Item label="lbs" value="lbs" />
-                <Picker.Item label="mg" value="mg" />
-              </Picker>
-              <Button
-                onPress={storeData}
-                title="Log Item"
-              />
-              {/* Put these texts here as spacer so the picker wouldn't overlap */}
-              {/* TODO: Get rid of the spacers and use css like a normal human being... */}
-              {/* TODO: Change several rows of text to a table or something nicer */}
-              <Text> </Text>
-              <Text> </Text>
-              <Text> </Text>
-              <Text> </Text>
-              <Text> </Text>
-              <Text> </Text>
-              <Text> </Text>
-              <Text> </Text>
-              <Text>serving size: {servingSize}</Text>
-              <Text>serving amount: {servingAmount}</Text>
-              <Text>Calories: {nutrientsObj["calories"]["value"]}</Text>
-              <Text>Sodium: {nutrientsObj["sodium"]["value"]}</Text>
-              {Object.keys(nutrientsObj).map((nutrientName, index) => {
-                if (nutrientName != "calories" || nutrientName != "sodium") {
-                  return (<Text key={index}>{nutrientName} - {nutrientsObj[nutrientName]["value"]}</Text>)
+        contentContainerStyle={styles.contentContainer}>
+        <View style={styles.welcomeContainer}>
+          <Text>{foodDetails.description} - {foodDetails.brandOwner}</Text>
+          <TextInput
+            placeholder="Enter amount eaten..."
+            keyboardType="numeric"
+            onChangeText={(text) => { setServingAmount(text ? text : 0); }}
+          />
+          <Picker
+            selectedValue={servingSize}
+            style={{ height: 50, width: 100 }}
+            onValueChange={(itemValue, itemIndex) => { setServingSize(itemValue) }}
+          >
+            <Picker.Item label="g" value="g" />
+            <Picker.Item label="oz" value="oz" />
+            <Picker.Item label="lbs" value="lbs" />
+            <Picker.Item label="mg" value="mg" />
+          </Picker>
+          <Button
+            onPress={storeData}
+            title="Log Item"
+          />
+          {/* Put these texts here as spacer so the picker wouldn't overlap */}
+          {/* TODO: Get rid of the spacers and use css like a normal human being... */}
+          {/* TODO: Change several rows of text to a table or something nicer */}
+
+          <Text> </Text>
+          <Text> </Text>
+          <Text> </Text>
+          <Text> </Text>
+          <Text> </Text>
+          <Text> </Text>
+          <Text> </Text>
+          <Text> </Text>
+          <Text>serving size: {servingSize}</Text>
+          <Text>serving amount: {servingAmount}</Text>
+          <Text>Calories: {nutrientsObj["calories"]["value"]}</Text>
+          <Text>Sodium: {nutrientsObj["sodium"]["value"]}</Text>
+          {Object.keys(nutrientsObj).map((nutrientName, index) => {
+            if (nutrientName != "calories" || nutrientName != "sodium") {
+              return (<Text key={index}>{nutrientName} - {nutrientsObj[nutrientName]["value"]}</Text>)
+            }
+          })}
+        </View>
+
+        <View>
+          <Card title={foodDetails.description + " - " + foodDetails.brandOwner}>
+            <View>
+              <ListItem key={0} title={"Serving Size: "}
+                rightSubtitle={
+                  <View style={{ flex: 1, flexDirection: 'row-reverse' }}>
+                    <Picker
+                      selectedValue={servingSize}
+                      style={{ height: 50, width: 100 }}
+                      onValueChange={(itemValue, itemIndex) => { setServingSize(itemValue) }}
+                    >
+                      <Picker.Item label="g" value="g" />
+                      <Picker.Item label="oz" value="oz" />
+                      <Picker.Item label="lbs" value="lbs" />
+                      <Picker.Item label="mg" value="mg" />
+                    </Picker>
+                    <TextInput
+                      placeholder="amount.."
+                      keyboardType="numeric"
+                      onChangeText={(text) => { setServingAmount(text ? text : 0); }}
+                    />
+                  </View>
                 }
-              })}
-          </View>
+                bottomDivider />
+              <ListItem key={2} title={"Calories: "} rightSubtitle={nutrientsObj["calories"]["value"]} bottomDivider />
+              <ListItem key={3} title={"Sodium: "} rightSubtitle={nutrientsObj["sodium"]["value"]} bottomDivider />
+              <ListItem key={4} title={"Other Information: "} rightSubtitle={nutrientsObj["sodium"]["value"]} bottomDivider />
+              <View style={{ flex: 1, flexDirection: 'row-reverse', padding: 10}}>
+                <Button title="Log" onPress={storeData} />
+                <Button title="Nutritional Information" onPress={() => {
+                  nutritionVisible = true;
+                  // TODO: Reload 
+                }} />
+              </View>
+            </View>
+          </Card>
+        </View>
       </ScrollView>
     </View>
   );
 }
+
 
 FoodDetailsPage.navigationOptions = {
   title: 'Details',
