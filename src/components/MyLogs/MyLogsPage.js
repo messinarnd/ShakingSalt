@@ -14,7 +14,7 @@ import { AsyncStorage } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { isLoading } from 'expo-font';
 
-const STORAGE_KEY = 'LOG_ITEMS_STORAGE' // Don't put it in Constants cause it doesn't get initialized before call to log DB cause react suX
+const LOG_STORAGE_KEY = 'LOG_ITEMS_STORAGE' // Don't put it in Constants cause it doesn't get initialized before call to log DB cause react suX
 
 export default class MyLogsPage extends React.Component {
   constructor(props) {
@@ -24,6 +24,11 @@ export default class MyLogsPage extends React.Component {
       isRefreshing: false,
       data: []
     }
+
+    // Refreshing the list every time screen gets a focus
+    this.props.navigation.addListener('willFocus', () => {
+      this.retrieveData();
+    });
   }
 
   // Reading dem data after rendering
@@ -36,7 +41,7 @@ export default class MyLogsPage extends React.Component {
     // await AsyncStorage.clear(); // FOR DEBUG ONLY - SHOULD BE COMMENTED
     console.log('Retrieving logged data..');
     try {
-      const retrievedItem = await AsyncStorage.getItem(STORAGE_KEY);
+      const retrievedItem = await AsyncStorage.getItem(LOG_STORAGE_KEY);
       if (retrievedItem !== null) {
         this.setState({
           dataSource: JSON.parse(retrievedItem),
@@ -68,7 +73,6 @@ export default class MyLogsPage extends React.Component {
 
   // Pull down to refresh this bad boi
   onRefresh() {
-    // TODO: implement a callback listener to update list automatically upon a new log
     this.setState({ isRefreshing: true });
     this.retrieveData();
   }
