@@ -6,6 +6,7 @@ import {
     View,
     Button
 } from 'react-native';
+// import { AsyncStorage } from 'react-native';
 import { getFoodDetailsEndpoint, axiosConfig } from '../../services/USDAFoodService';
 import { ListItem } from 'react-native-elements';
 const axios = require("axios");
@@ -15,11 +16,17 @@ export default SearchResultsPage = (props) => {
     const { navigation } = props
     const { params } = navigation.state;
     const foodItems = params.foodItems;
+    // currently used for passing the food item search
+    global.test = foodItems;
+    global.filtered = foodItems;
 
     getFoodDetails = (fdcId) => {
         axios.get(getFoodDetailsEndpoint(fdcId), axiosConfig)
             .then((response) => {
-                console.log("response data: ", response.data);
+                // console.log("response data: ", response.data);
+                global.filtered = (global.test).filter(function(value, index, arr){
+                    return value.fdcId != fdcId;
+                });
                 navigation.navigate('FoodDetailsTabsPage', {
                     foodDetails: response.data
                 })

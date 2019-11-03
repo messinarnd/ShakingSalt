@@ -20,7 +20,7 @@ export default FoodDetailsTabsPage = (props) => {
   const { params } = navigation.state;
   const foodDetails = params.foodDetails;
 
-  console.log("afsdh: ", foodDetails);
+  // console.log("afsdh: ", foodDetails);
   return (
     <Container>
         <Tabs>
@@ -28,7 +28,7 @@ export default FoodDetailsTabsPage = (props) => {
                 <FoodDetailsPage foodDetails={foodDetails}/>
             </Tab>
             <Tab heading="Alternatives">
-                <AlternativesPage />
+                <AlternativesPage navigation={navigation} foodDetails={foodDetails}/>
             </Tab>
         </Tabs>
     </Container>

@@ -11,7 +11,6 @@ import Searchbar from "./Searchbar";
 import {ListItem} from 'react-native-elements';
 import { searchResultsEndpoint, axiosConfig } from "../../services/USDAFoodService";
 import { AsyncStorage } from 'react-native';
-
 const axios = require("axios");
 
 const REC_SEARCHED_STORAGE_KEY = 'REC_SEARCHED_ITEMS_STORAGE'
@@ -45,9 +44,11 @@ export default class SearchPage extends React.Component {
         if (response["data"]["totalHits"] !== 0) {
             // If success, log to recently searched DB
           this.storeRecentlySearchedData(foodItem);
-
           // Response.data.foods is an array of all food objects
           // Navigate vs push might come in handy with clicking on food items in the alternatives list
+          let searchResults = response["data"]["foods"];
+          console.log("storing to AsyncStorage...")
+          AsyncStorage.setItem("SEARCH_RESULTS", JSON.stringify(searchResults));
           this.props.navigation.navigate('SearchResultsPage', {
             foodItems: response["data"]["foods"]
           })

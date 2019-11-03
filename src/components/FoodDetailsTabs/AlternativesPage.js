@@ -4,60 +4,174 @@ import {
   StyleSheet,
   Text,
   View,
+  ActivityIndicator,
   Button
 } from 'react-native';
-import { ListItem } from 'react-native-elements'
+import { AsyncStorage } from 'react-native';
+import { getFoodDetailsEndpoint, axiosConfig } from '../../services/USDAFoodService';
+import { ListItem } from 'react-native-elements';
+const axios = require("axios");
+const FETCH_KEY = 'SEARCH_RESULTS' // three hours of googling later... kms i hate javascript
 
-// import { searchResultsEndpoint, axiosConfig } from "../../services/USDAFoodService";
-// const axios = require("axios");
+// gg for stateful components
+export default class Alternatives extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      checkedItems: 0,
+      foodItems: [],
+      searchItems: []
+    };
+    // console.log("FOOD SODIUM:", this.props.foodDetails.labelNutrients.sodium.value);
+  }
 
+  // getting stuff as we initially load 
+  componentDidMount = async() => {
+    // get the stored data (this list is filtered so the currently selected item isn't included)
+    await this.getSearchedFoods();
+  }
 
-export default Alternatives = (props) => {
-  // Probably need to add redux for state so we know what the search term was for alternatives
-  // Or maybe if they search 'cheese' but click on 'cheddar cheese' then the alternatives should search for cheddar
+  // yeet our search results from AsynStorage
+  getSearchedFoods = async() => {
+    console.log('Fetching searched food list');
+    try {
+      const savedList = await AsyncStorage.getItem(FETCH_KEY);
+      if (savedList !== null) {
+        var searchResults = JSON.parse(savedList);
+        let id = this.props.foodDetails.fdcId;
+        searchResults = searchResults.filter(function(value, index, arr){
+          return value.fdcId != id;
+        });
+        this.setState({
+          searchItems: searchResults
+        }, async() => {
+          var len = this.state.searchItems.length;
+          for (var i = 0; i < len; i++) {
+            this.getFoodDetails(this.state.searchItems[i].fdcId);
+          }
+      });
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 
-  return (
-    <View style={styles.container}>
-      <ScrollView style={styles.container}
-        contentContainerStyle={styles.contentContainer}>
-        <View>
-          <ListItem
-            key={0}
-            title={"Alt Food 1"}
-            rightSubtitle={"Sodium Level Placeholder"}
-            onPress={() => alert("Replace this alert with: " + "getFoodDetails(foodItem.fdcId)")}
-            bottomDivider
-          />
-          {/* {
-            AN ARRAY WITH ALTERNATIVE FOOD ITEMS.map((foodItem, index) => {
-              if (foodItem.brandOwner == null) {
-                return (
-                  <ListItem
-                    key={foodItem.fdcId}
-                    title={`${foodItem.description} (${foodItem.score})`}
-                    rightSubtitle={"Sodium Level Placeholder"}
-                    onPress={() => getFoodDetails(foodItem.fdcId)}
-                    bottomDivider
-                  />
-                )
-              } else {
-                return (
-                  <ListItem
-                    key={foodItem.fdcId}
-                    title={`${foodItem.description} - ${foodItem.brandOwner} (${foodItem.score})`}
-                    rightSubtitle={"Sodium Level Placeholder"}
-                    onPress={() => getFoodDetails(foodItem.fdcId)}
-                    bottomDivider
-                  />
-                )
-              }
+  // get the actual food data
+  getFoodDetails = (fdcId) => {
+    axios.get(getFoodDetailsEndpoint(fdcId), axiosConfig)
+        .then((response) => {
+            // console.log("IT'S YA BOI");
+            const detailedInfo = response.data;
+            // filter for sodium level (foods with unknown sodium content get a free pass)
+            var temp = detailedInfo.labelNutrients;
+            var temp2 = null;
+            var checkSodium = 0;
+            if (temp != null) {
+              temp2 = detailedInfo.labelNutrients.sodium;
             }
-            )
-          } */}
+            if(temp != null && temp2 != null) {
+              checkSodium = detailedInfo.labelNutrients.sodium.value;
+            }
+            if (checkSodium < this.props.foodDetails.labelNutrients.sodium.value) {
+              // console.log("Adding this item... Sodium: ", checkSodium);
+              this.setState({ 
+                checkedItems : this.state.checkedItems + 1,
+                foodItems: this.state.foodItems.concat(detailedInfo) 
+              });
+            } else {
+              this.setState({ 
+                checkedItems : this.state.checkedItems + 1,
+              });
+              // console.log("WARNING: SODIUM TOO HIGH: ", checkSodium);
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+  }
+  
+  // for getting sodium information in the view
+  // returns string "UNKNOWN" if food.labelNutrients is null
+  // or food.labelNutrients.sodium is null
+  getSodiumInformation = (food) => {
+    var temp = food.labelNutrients;
+    var temp2 = null;
+    if (temp != null) {
+      temp2 = food.labelNutrients.sodium;
+    }
+    if(temp != null && temp2 != null) {
+      return food.labelNutrients.sodium.value.toString();
+    } else {
+      return "UNKNOWN";
+    }
+  }
+
+  // the click handler when an alternative item is clicked
+  // doesn't search the db again because we already did that for sodium info
+  getTransition = (fdcId) => {
+    // using push so we add a page to the stack (so back goes
+    // to the previous food details page's alt tab)
+    console.log("TRANSITIONING");
+    var array = this.state.foodItems;
+    var foodItem = array.find(function(element) { 
+      return element.fdcId == fdcId; 
+    });
+    console.log(foodItem.brandOwner);
+    // console.log(this.state.searchItems[index].brandOwner);
+    // console.log("fake push");
+    this.props.navigation.push('FoodDetailsTabsPage', {
+      foodDetails: foodItem
+    })
+  }
+
+  // display our page
+  render() {
+    // if we haven't finished loading and stuff yet, stall
+    if (this.state.checkedItems == 0 || this.state.checkedItems < this.state.searchItems.length) {
+      return(
+        <View style={{flex: 1, paddingTop:20}}>
+          <ActivityIndicator />
         </View>
-      </ScrollView>
-    </View>
-  );
+      );
+    }
+    console.log("ready: (checked", this.state.checkedItems,
+      "\b, passed", this.state.foodItems.length, "\b, orig", this.state.searchItems.length, "\b)");
+    return (
+      <View style={styles.container}>
+        <ScrollView style={styles.container}
+          contentContainerStyle={styles.contentContainer}>
+          <View>
+            {
+              this.state.foodItems.map((foodItem, index) => {
+                if (foodItem.brandOwner == null) {
+                  return (
+                    <ListItem
+                      key={foodItem.fdcId}
+                      title={`${foodItem.description}`}
+                      rightSubtitle={this.getSodiumInformation(foodItem)}
+                      onPress={() => this.getTransition(foodItem.fdcId)}
+                      bottomDivider
+                    />
+                  )
+                } else {
+                  return (
+                    <ListItem
+                      key={foodItem.fdcId}
+                      title={`${foodItem.description} - ${foodItem.brandOwner}`}
+                      rightSubtitle={this.getSodiumInformation(foodItem)}
+                      onPress={() => this.getTransition(foodItem.fdcId)}
+                      bottomDivider
+                    />
+                  )
+                }
+              }
+              )
+            }
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
 }
 
 Alternatives.navigationOptions = {
