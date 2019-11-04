@@ -81,7 +81,7 @@ export default class MyLogsPage extends React.Component {
   showEmptyComponent = () => {
     return (
         <View>
-            <Text style={styles.emptyMessageStyle}>No Logged Items, EAT SOMETHING!</Text>
+            <Text style={styles.emptyMessageStyle}>No Logged Items. Eat Something!</Text>
         </View>
     )
   }

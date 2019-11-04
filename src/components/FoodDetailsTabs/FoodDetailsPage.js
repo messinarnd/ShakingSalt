@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Card, ListItem, Overlay } from 'react-native-elements'
 import { AsyncStorage } from 'react-native';
+import { gray, grey } from 'ansi-colors';
 
 const STORAGE_KEY = 'LOG_ITEMS_STORAGE' // Don't put it in Constants cause it doesn't get initialized before call to log DB cause react suX
 var nutritionVisible = false;
@@ -107,7 +108,7 @@ export default FoodDetailsPage = (props) => {
   console.log("IS VISIBLE: " + nutritionVisible);
   return (
     <View style={styles.container}>
-      <Overlay 
+      {/* <Overlay 
         isVisible={nutritionVisible} 
         onBackdropPress={() => {
         nutritionVisible = false
@@ -118,53 +119,9 @@ export default FoodDetailsPage = (props) => {
             return (<ListItem title={nutrientName} rightSubtitle={nutrientsObj[nutrientName]["value"]}/>)
           }
         })}
-      </Overlay>
+      </Overlay> */}
       <ScrollView style={styles.container}
         contentContainerStyle={styles.contentContainer}>
-        <View style={styles.welcomeContainer}>
-          <Text>{foodDetails.description} - {foodDetails.brandOwner}</Text>
-          <TextInput
-            placeholder="Enter amount eaten..."
-            keyboardType="numeric"
-            onChangeText={(text) => { setServingAmount(text ? text : 0); }}
-          />
-          <Picker
-            selectedValue={servingSize}
-            style={{ height: 50, width: 100 }}
-            onValueChange={(itemValue, itemIndex) => { setServingSize(itemValue) }}
-          >
-            <Picker.Item label="g" value="g" />
-            <Picker.Item label="oz" value="oz" />
-            <Picker.Item label="lbs" value="lbs" />
-            <Picker.Item label="mg" value="mg" />
-          </Picker>
-          <Button
-            onPress={storeData}
-            title="Log Item"
-          />
-          {/* Put these texts here as spacer so the picker wouldn't overlap */}
-          {/* TODO: Get rid of the spacers and use css like a normal human being... */}
-          {/* TODO: Change several rows of text to a table or something nicer */}
-
-          <Text> </Text>
-          <Text> </Text>
-          <Text> </Text>
-          <Text> </Text>
-          <Text> </Text>
-          <Text> </Text>
-          <Text> </Text>
-          <Text> </Text>
-          <Text>serving size: {servingSize}</Text>
-          <Text>serving amount: {servingAmount}</Text>
-          <Text>Calories: {nutrientsObj["calories"]["value"]}</Text>
-          <Text>Sodium: {nutrientsObj["sodium"]["value"]}</Text>
-          {Object.keys(nutrientsObj).map((nutrientName, index) => {
-            if (nutrientName != "calories" || nutrientName != "sodium") {
-              return (<Text key={index}>{nutrientName} - {nutrientsObj[nutrientName]["value"]}</Text>)
-            }
-          })}
-        </View>
-
         <View>
           <Card title={foodDetails.description + " - " + foodDetails.brandOwner}>
             <View>
@@ -192,12 +149,17 @@ export default FoodDetailsPage = (props) => {
               <ListItem key={2} title={"Calories: "} rightSubtitle={nutrientsObj["calories"]["value"]} bottomDivider />
               <ListItem key={3} title={"Sodium: "} rightSubtitle={nutrientsObj["sodium"]["value"]} bottomDivider />
               <ListItem key={4} title={"Other Information: "} rightSubtitle={nutrientsObj["sodium"]["value"]} bottomDivider />
+              {Object.keys(nutrientsObj).map((nutrientName, index) => {
+                if (nutrientName != "calories" || nutrientName != "sodium") {
+                  return (<ListItem titleStyle={{ color: 'grey', fontSize: 10 }} rightSubtitleStyle={{ color: 'grey', fontSize: 10 }} title={nutrientName} rightSubtitle={nutrientsObj[nutrientName]["value"]}/>)
+                }
+              })}
               <View style={{ flex: 1, flexDirection: 'row-reverse', padding: 10}}>
                 <Button title="Log" onPress={storeData} />
-                <Button title="Nutritional Information" onPress={() => {
+                {/* <Button title="Nutritional Information" onPress={() => {
                   nutritionVisible = true;
                   // TODO: Reload 
-                }} />
+                }} /> */}
               </View>
             </View>
           </Card>

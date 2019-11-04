@@ -30,9 +30,16 @@ export default SearchResultsPage = (props) => {
                 navigation.navigate('FoodDetailsTabsPage', {
                     foodDetails: response.data
                 })
-                // Need to add navigation to a new page called FoodDetailsPage
-                // Look at SearchPage for how this can be done
-                // Think we only need to pass in response.data.foodNutrients not all of response.data
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }
+
+    getSodiumLevel = (fdcId) => {
+        axios.get(getFoodDetailsEndpoint(fdcId), axiosConfig)
+            .then((response) => {
+                return response.data.labelNutrients.sodium.value ? `${response.data.labelNutrients.sodium.value}` : "Value Unknown";
             })
             .catch((err) => {
                 console.log(err);
@@ -50,8 +57,8 @@ export default SearchResultsPage = (props) => {
                                 return (
                                     <ListItem
                                         key={foodItem.fdcId}
-                                        title={`${foodItem.description} (${foodItem.score})`}
-                                        rightSubtitle={"Sodium Level Placeholder"}
+                                        title={`${foodItem.description}`}
+                                        rightSubtitle={getSodiumLevel(foodItem.fdcId)}
                                         onPress={() => getFoodDetails(foodItem.fdcId)}
                                         bottomDivider
                                     />
@@ -60,8 +67,8 @@ export default SearchResultsPage = (props) => {
                                 return (
                                     <ListItem
                                         key={foodItem.fdcId}
-                                        title={`${foodItem.description} - ${foodItem.brandOwner} (${foodItem.score})`}
-                                        rightSubtitle={"Sodium Level Placeholder"}
+                                        title={`${foodItem.description} - ${foodItem.brandOwner}`}
+                                        rightSubtitle={getSodiumLevel(foodItem.fdcId)}
                                         onPress={() => getFoodDetails(foodItem.fdcId)}
                                         bottomDivider
                                     />
