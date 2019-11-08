@@ -37,7 +37,7 @@ export default SearchResultsPage = (props) => {
     }
 
     getSodiumLevel = (fdcId) => {
-        axios.get(getFoodDetailsEndpoint(fdcId), axiosConfig)
+        return axios.get(getFoodDetailsEndpoint(fdcId), axiosConfig)
             .then((response) => {
                 return response.data.labelNutrients.sodium.value ? `${response.data.labelNutrients.sodium.value}` : "Value Unknown";
             })

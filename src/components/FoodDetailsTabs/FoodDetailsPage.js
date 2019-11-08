@@ -6,6 +6,8 @@ import {
   View,
   Button,
   TextInput,
+  Container,
+  Col,
   Row,
   Picker
 } from 'react-native';
@@ -125,36 +127,37 @@ export default FoodDetailsPage = (props) => {
         <View>
           <Card title={foodDetails.description + " - " + foodDetails.brandOwner}>
             <View>
-              <ListItem key={0} title={"Serving Size: "}
-                rightSubtitle={
-                  <View style={{ flex: 1, flexDirection: 'row-reverse' }}>
-                    <Picker
-                      selectedValue={servingSize}
-                      style={{ height: 50, width: 100 }}
-                      onValueChange={(itemValue, itemIndex) => { setServingSize(itemValue) }}
-                    >
-                      <Picker.Item label="g" value="g" />
-                      <Picker.Item label="oz" value="oz" />
-                      <Picker.Item label="lbs" value="lbs" />
-                      <Picker.Item label="mg" value="mg" />
-                    </Picker>
-                    <TextInput
-                      placeholder="amount.."
-                      keyboardType="numeric"
-                      onChangeText={(text) => { setServingAmount(text ? text : 0); }}
-                    />
-                  </View>
-                }
-                bottomDivider />
+              <View style={{ flex: 0, flexDirection: 'row' }}>
+                <View style={{ flex: 2, fontSize: 14 }}><ListItem key={0} title={"Serving Size: "} bottomDivider /></View>
+                <View style={{ flex: 1, justifyContent: 'center' }}>
+                  <TextInput
+                    placeholder="amount.."
+                    keyboardType="numeric"
+                    onChangeText={(text) => { setServingAmount(text ? text : 0); }}
+                  />
+                </View>
+                <View style={{ flex: 1, justifyContent: 'center'  }}>
+                  <Picker
+                    selectedValue={servingSize}
+                    style={{ height: 50, width: 100 }}
+                    onValueChange={(itemValue, itemIndex) => { setServingSize(itemValue) }}
+                  >
+                    <Picker.Item label="g" value="g" />
+                    <Picker.Item label="oz" value="oz" />
+                    <Picker.Item label="lbs" value="lbs" />
+                    <Picker.Item label="mg" value="mg" />
+                  </Picker>
+                </View>
+              </View>
               <ListItem key={2} title={"Calories: "} rightSubtitle={nutrientsObj["calories"]["value"]} bottomDivider />
               <ListItem key={3} title={"Sodium: "} rightSubtitle={nutrientsObj["sodium"]["value"]} bottomDivider />
               <ListItem key={4} title={"Other Information: "} rightSubtitle={nutrientsObj["sodium"]["value"]} bottomDivider />
               {Object.keys(nutrientsObj).map((nutrientName, index) => {
                 if (nutrientName != "calories" || nutrientName != "sodium") {
-                  return (<ListItem titleStyle={{ color: 'grey', fontSize: 10 }} rightSubtitleStyle={{ color: 'grey', fontSize: 10 }} title={nutrientName} rightSubtitle={nutrientsObj[nutrientName]["value"]}/>)
+                  return (<ListItem titleStyle={{ color: 'grey', fontSize: 10 }} rightSubtitleStyle={{ color: 'grey', fontSize: 10 }} title={nutrientName} rightSubtitle={nutrientsObj[nutrientName]["value"]} />)
                 }
               })}
-              <View style={{ flex: 1, flexDirection: 'row-reverse', padding: 10}}>
+              <View style={{ flex: 1, flexDirection: 'row-reverse', padding: 10 }}>
                 <Button title="Log" onPress={storeData} />
                 {/* <Button title="Nutritional Information" onPress={() => {
                   nutritionVisible = true;
