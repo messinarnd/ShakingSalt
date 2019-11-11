@@ -45,12 +45,21 @@ export default SearchListItem = (props) => {
     }
 
     getSodiumLevel(item.fdcId);
-
+    let color;
+    console.log("BITCH", sodiumLevel);
+    if (sodiumLevel < 140) {
+        color = "success";
+    } else if (sodiumLevel > 480) {
+        color = "error";
+    } else {
+        color = "warning";
+    }
+    
     return(
         <View>
             <ListItem
                 title={item.brandOwner ? `${item.description} - ${item.brandOwner}` : `${item.description}`}
-                badge= { {value:sodiumLevel, status:"primary"}}
+                badge= { {value:sodiumLevel, status:color}}
                 // getSodiumLevel(item.fdcId)
                 onPress={() => getFoodDetails(item.fdcId)}
                 bottomDivider

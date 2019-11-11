@@ -15,6 +15,10 @@ import { Card, ListItem, Overlay } from 'react-native-elements'
 import { AsyncStorage } from 'react-native';
 import { gray, grey } from 'ansi-colors';
 
+// disables the warnings lmao
+// TODO: fix this later!!
+console.disableYellowBox = true;
+
 const STORAGE_KEY = 'LOG_ITEMS_STORAGE' // Don't put it in Constants cause it doesn't get initialized before call to log DB cause react suX
 var nutritionVisible = false;
 // import { searchResultsEndpoint, axiosConfig } from "../../services/USDAFoodService";
@@ -139,7 +143,7 @@ export default FoodDetailsPage = (props) => {
                 <View style={{ flex: 1, justifyContent: 'center'  }}>
                   <Picker
                     selectedValue={servingSize}
-                    style={{ height: 50, width: 100 }}
+                    style={{ height: 40, width: 50 }}
                     onValueChange={(itemValue, itemIndex) => { setServingSize(itemValue) }}
                   >
                     <Picker.Item label="g" value="g" />
