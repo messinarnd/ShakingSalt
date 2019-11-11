@@ -48,11 +48,18 @@ export default SearchResultsPage = (props) => {
     //         })
     // }
 
+    // make results page look less dumb with the "sodium per serving"
     return (
         <View style={styles.container}>
             <ScrollView style={styles.container}
                 contentContainerStyle={styles.contentContainer}>
                 <View>
+                    <ListItem
+                        title={"Search Results"}
+                        badge= { {value:"Sodium per serving"}}
+                        onPress={() => getFoodDetails(item.fdcId)}
+                        bottomDivider
+                    />
                     {
                         foodItems.map((foodItem, index) => {
                             return(<SearchListItem navigation={navigation} key={foodItem.fdcId} item={foodItem}></SearchListItem>);

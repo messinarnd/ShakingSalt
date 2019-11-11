@@ -59,7 +59,7 @@ export default SearchListItem = (props) => {
         <View>
             <ListItem
                 title={item.brandOwner ? `${item.description} - ${item.brandOwner}` : `${item.description}`}
-                badge= { {value:sodiumLevel, status:color}}
+                badge= { {value:sodiumLevel + " mg", status:color}}
                 // getSodiumLevel(item.fdcId)
                 onPress={() => getFoodDetails(item.fdcId)}
                 bottomDivider
