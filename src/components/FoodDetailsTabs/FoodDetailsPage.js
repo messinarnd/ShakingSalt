@@ -83,7 +83,7 @@ export default FoodDetailsPage = (props) => {
   const ogNutrientsObj = foodDetails.foodNutrients.reduce((obj, thisNutrient) => {
     console.log("nutrient name: ", thisNutrient.nutrient.name);
     nutrientName = thisNutrient.nutrient.name;
-    nutrientAmount = thisNutrient.nutrient.number;
+    nutrientAmount = thisNutrient.amount;
     // idk if we actually need the unit or not
     nutrientUnit = thisNutrient.nutrient.unitName;
     tempObj = {
@@ -187,7 +187,7 @@ export default FoodDetailsPage = (props) => {
               <ListItem key={4} title={"Other Information: "} bottomDivider />
               {Object.keys(nutrientsObj).map((nutrientName, index) => {
                 if (nutrientName != "Energy" || nutrientName != "Sodium, Na") {
-                  return (<ListItem titleStyle={{ color: 'grey', fontSize: 10 }} rightSubtitleStyle={{ color: 'grey', fontSize: 10 }} title={nutrientName} rightSubtitle={nutrientsObj[nutrientName]["value"]} />)
+                  return (<ListItem titleStyle={{ color: 'grey', fontSize: 16 }} rightSubtitleStyle={{ color: 'grey', fontSize: 10 }} title={nutrientName} rightSubtitle={nutrientsObj[nutrientName]["amount"] + nutrientsObj[nutrientName]["unit"]} />)
                 }
               })}
               <View style={{ flex: 1, flexDirection: 'row-reverse', padding: 10 }}>

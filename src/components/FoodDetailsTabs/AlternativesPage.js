@@ -148,7 +148,7 @@ export default class Alternatives extends React.Component {
                     <ListItem
                       key={foodItem.fdcId}
                       title={`${foodItem.description}`}
-                      rightSubtitle={this.getSodiumInformation(foodItem)}
+                      // rightSubtitle={this.getSodiumInformation(foodItem)}
                       onPress={() => this.getTransition(foodItem.fdcId)}
                       bottomDivider
                     />
@@ -158,7 +158,7 @@ export default class Alternatives extends React.Component {
                     <ListItem
                       key={foodItem.fdcId}
                       title={`${foodItem.description} - ${foodItem.brandOwner}`}
-                      rightSubtitle={this.getSodiumInformation(foodItem)}
+                      // rightSubtitle={this.getSodiumInformation(foodItem)}
                       onPress={() => this.getTransition(foodItem.fdcId)}
                       bottomDivider
                     />

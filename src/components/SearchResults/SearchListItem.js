@@ -34,9 +34,20 @@ export default SearchListItem = (props) => {
     }
 
     getSodiumLevel = (fdcId) => {
+
         axios.get(getFoodDetailsEndpoint(fdcId), axiosConfig)
             .then((response) => {
-                setSodiumLevel(response.data.labelNutrients.sodium.value ? `${response.data.labelNutrients.sodium.value}` : "Value Unknown");
+
+                let sodLvl = response.data.foodNutrients.reduce((sodiumContent, thisNutrient) => {
+                    let nutrientName = thisNutrient.nutrient.name;
+                    if (nutrientName == "Sodium, Na") {
+                        return sodiumContent + parseInt(thisNutrient.amount);
+                    } else {
+                        return sodiumContent;
+                    }
+                }, 0);
+
+                setSodiumLevel(sodLvl);
             })
             .catch((err) => {
                 console.log(err);
