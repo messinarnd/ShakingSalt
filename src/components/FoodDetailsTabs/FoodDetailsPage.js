@@ -172,7 +172,7 @@ export default FoodDetailsPage = (props) => {
                 <View style={{ flex: 1, justifyContent: 'center'  }}>
                   <Picker
                     selectedValue={servingSize}
-                    style={{ height: 40, width: 50 }}
+                    style={{ flex : 1}}
                     onValueChange={(itemValue, itemIndex) => { setServingSize(itemValue) }}
                   >
                     <Picker.Item label="g" value="g" />
