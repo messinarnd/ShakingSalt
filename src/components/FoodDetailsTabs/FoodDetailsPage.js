@@ -78,7 +78,22 @@ export default FoodDetailsPage = (props) => {
     return formattedDateTime;
   };
 
-  const [nutrientsObj, setNutrientsObj] = useState({ ...foodDetails.labelNutrients })
+  // const [nutrientsObj, setNutrientsObj] = useState({ ...foodDetails.labelNutrients })
+  
+  const ogNutrientsObj = foodDetails.foodNutrients.reduce((obj, thisNutrient) => {
+    console.log("nutrient name: ", thisNutrient.nutrient.name);
+    nutrientName = thisNutrient.nutrient.name;
+    nutrientAmount = thisNutrient.nutrient.number;
+    // idk if we actually need the unit or not
+    nutrientUnit = thisNutrient.nutrient.unitName;
+    tempObj = {
+      "amount": nutrientAmount,
+      "unit": nutrientUnit
+    }
+    obj[nutrientName] = tempObj;
+    return obj;
+  }, {});
+  const [nutrientsObj, setNutrientsObj] = useState(ogNutrientsObj);
   console.log("og nutrients: ", nutrientsObj)
 
   const [servingSize, setServingSize] = useState("g")
@@ -103,13 +118,27 @@ export default FoodDetailsPage = (props) => {
   }, [servingSize, servingAmount])
 
   updateAllFoodNutrients = (factor) => {
-    let nutrientsObjCopy = { ...foodDetails.labelNutrients }
+    let nutrientsObjCopy = {...ogNutrientsObj};
     let newNutrientObj = Object.keys(nutrientsObjCopy).reduce((obj, nutrientName) => {
-      obj[nutrientName] = {}
-      obj[nutrientName]["value"] = nutrientsObjCopy[nutrientName]["value"] * factor
-      return obj
-    }, {})
-    setNutrientsObj(newNutrientObj)
+      let updatedAmount = nutrientsObjCopy[nutrientName]["amount"] * factor;
+      let updatedUnit = nutrientsObjCopy[nutrientName]["unit"];
+      temp = {
+        "amount": updatedAmount,
+        "unit": updatedUnit
+      }
+      obj[nutrientName] = temp;
+      return obj;
+    }, {});
+    setNutrientsObj(newNutrientObj);
+
+    // console.log("updating with: ", newNutrientObj)
+    // let nutrientsObjCopy = { ...foodDetails.labelNutrients }
+    // let newNutrientObj = Object.keys(nutrientsObjCopy).reduce((obj, nutrientName) => {
+    //   obj[nutrientName] = {}
+    //   obj[nutrientName]["value"] = nutrientsObjCopy[nutrientName]["value"] * factor
+    //   return obj
+    // }, {})
+    // setNutrientsObj(newNutrientObj)
   }
   console.log("IS VISIBLE: " + nutritionVisible);
   return (
@@ -153,12 +182,12 @@ export default FoodDetailsPage = (props) => {
                   </Picker>
                 </View>
               </View>
-              <ListItem key={2} title={"Calories: "} rightSubtitle={nutrientsObj["calories"]["value"]} bottomDivider />
-              <ListItem key={3} title={"Sodium: "} rightSubtitle={nutrientsObj["sodium"]["value"]} bottomDivider />
-              <ListItem key={4} title={"Other Information: "} rightSubtitle={nutrientsObj["sodium"]["value"]} bottomDivider />
+              <ListItem key={2} title={"Calories: "} rightSubtitle={nutrientsObj["Energy"]["amount"]} bottomDivider />
+              <ListItem key={3} title={"Sodium: "} rightSubtitle={nutrientsObj["Sodium, Na"]["amount"]} bottomDivider />
+              <ListItem key={4} title={"Other Information: "} bottomDivider />
               {Object.keys(nutrientsObj).map((nutrientName, index) => {
-                if (nutrientName != "calories" || nutrientName != "sodium") {
-                  return (<ListItem key={index} titleStyle={{ color: 'grey', fontSize: 10 }} rightSubtitleStyle={{ color: 'grey', fontSize: 10 }} title={nutrientName} rightSubtitle={nutrientsObj[nutrientName]["value"]} />)
+                if (nutrientName != "Energy" || nutrientName != "Sodium, Na") {
+                  return (<ListItem titleStyle={{ color: 'grey', fontSize: 10 }} rightSubtitleStyle={{ color: 'grey', fontSize: 10 }} title={nutrientName} rightSubtitle={nutrientsObj[nutrientName]["value"]} />)
                 }
               })}
               <View style={{ flex: 1, flexDirection: 'row-reverse', padding: 10 }}>

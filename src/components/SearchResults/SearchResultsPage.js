@@ -22,32 +22,6 @@ export default SearchResultsPage = (props) => {
     global.test = foodItems;
     global.filtered = foodItems;
 
-    // getFoodDetails = (fdcId) => {
-    //     axios.get(getFoodDetailsEndpoint(fdcId), axiosConfig)
-    //         .then((response) => {
-    //             // console.log("response data: ", response.data);
-    //             global.filtered = (global.test).filter(function(value, index, arr){
-    //                 return value.fdcId != fdcId;
-    //             });
-    //             navigation.navigate('FoodDetailsTabsPage', {
-    //                 foodDetails: response.data
-    //             })
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //         })
-    // }
-
-    // getSodiumLevel = (fdcId) => {
-    //     return axios.get(getFoodDetailsEndpoint(fdcId), axiosConfig)
-    //         .then((response) => {
-    //             return response.data.labelNutrients.sodium.value ? `${response.data.labelNutrients.sodium.value}` : "Value Unknown";
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //         })
-    // }
-
     // make results page look less dumb with the "sodium per serving"
     return (
         <View style={styles.container}>

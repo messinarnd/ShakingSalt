@@ -14,7 +14,6 @@ const axios = require("axios");
 
 export default SearchListItem = (props) => {
     const { item, navigation } = props;
-    console.log("nav: ", navigation)
 
     const [sodiumLevel, setSodiumLevel] = useState(0);
 
@@ -46,7 +45,6 @@ export default SearchListItem = (props) => {
 
     getSodiumLevel(item.fdcId);
     let color;
-    console.log("BITCH", sodiumLevel);
     if (sodiumLevel < 140) {
         color = "success";
     } else if (sodiumLevel > 480) {
