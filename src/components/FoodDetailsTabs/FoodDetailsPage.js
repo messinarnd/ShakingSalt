@@ -154,7 +154,7 @@ export default FoodDetailsPage = (props) => {
               <ListItem key={4} title={"Other Information: "} rightSubtitle={nutrientsObj["sodium"]["value"]} bottomDivider />
               {Object.keys(nutrientsObj).map((nutrientName, index) => {
                 if (nutrientName != "calories" || nutrientName != "sodium") {
-                  return (<ListItem titleStyle={{ color: 'grey', fontSize: 10 }} rightSubtitleStyle={{ color: 'grey', fontSize: 10 }} title={nutrientName} rightSubtitle={nutrientsObj[nutrientName]["value"]} />)
+                  return (<ListItem key={index} titleStyle={{ color: 'grey', fontSize: 10 }} rightSubtitleStyle={{ color: 'grey', fontSize: 10 }} title={nutrientName} rightSubtitle={nutrientsObj[nutrientName]["value"]} />)
                 }
               })}
               <View style={{ flex: 1, flexDirection: 'row-reverse', padding: 10 }}>
