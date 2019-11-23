@@ -1,21 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-    ScrollView,
     StyleSheet,
-    Text,
     View,
-    Button
 } from 'react-native';
-// import { AsyncStorage } from 'react-native';
 import { getFoodDetailsEndpoint, axiosConfig } from '../../services/USDAFoodService';
 import { ListItem } from 'react-native-elements';
-import { Avatar, Badge, Icon, withBadge } from 'react-native-elements';
 const axios = require("axios");
 
 export default SearchListItem = (props) => {
     const { item, navigation } = props;
 
+    // Get the sodium level for each item (not included in original API call so have to make separate one for each item)
     const [sodiumLevel, setSodiumLevel] = useState(0);
+    useEffect(() => {
+        axios.get(getFoodDetailsEndpoint(item.fdcId), axiosConfig)
+        .then((response) => {
+
+            let sodLvl = response.data.foodNutrients.reduce((sodiumContent, thisNutrient) => {
+                let nutrientName = thisNutrient.nutrient.name;
+                if (nutrientName == "Sodium, Na") {
+                    return sodiumContent + parseInt(thisNutrient.amount);
+                } else {
+                    return sodiumContent;
+                }
+            }, 0);
+
+            setSodiumLevel(sodLvl);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    }, []);
+
+    let color;
+    if (sodiumLevel < 140) {
+        color = "success";
+    } else if (sodiumLevel > 480) {
+        color = "error";
+    } else {
+        color = "warning";
+    }
 
     getFoodDetails = (fdcId) => {
         axios.get(getFoodDetailsEndpoint(fdcId), axiosConfig)
@@ -32,46 +56,15 @@ export default SearchListItem = (props) => {
                 console.log(err);
             })
     }
-
-    getSodiumLevel = (fdcId) => {
-
-        axios.get(getFoodDetailsEndpoint(fdcId), axiosConfig)
-            .then((response) => {
-
-                let sodLvl = response.data.foodNutrients.reduce((sodiumContent, thisNutrient) => {
-                    let nutrientName = thisNutrient.nutrient.name;
-                    if (nutrientName == "Sodium, Na") {
-                        return sodiumContent + parseInt(thisNutrient.amount);
-                    } else {
-                        return sodiumContent;
-                    }
-                }, 0);
-
-                setSodiumLevel(sodLvl);
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-    }
-
-    getSodiumLevel(item.fdcId);
-    let color;
-    if (sodiumLevel < 140) {
-        color = "success";
-    } else if (sodiumLevel > 480) {
-        color = "error";
-    } else {
-        color = "warning";
-    }
     
     return(
         <View>
             <ListItem
                 title={item.brandOwner ? `${item.description} - ${item.brandOwner}` : `${item.description}`}
                 badge= { {value:sodiumLevel + " mg", status:color}}
-                // getSodiumLevel(item.fdcId)
                 onPress={() => getFoodDetails(item.fdcId)}
                 bottomDivider
+                chevron
             />
         </View>
         

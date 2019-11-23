@@ -22,3 +22,6 @@ export default Searchbar = (props) => {
 		/>
 	);
 }
+
+// Searchbar TODOs:
+// TODO: Make styling of Searchbar match the rest of the application

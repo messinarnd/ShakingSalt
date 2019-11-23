@@ -42,33 +42,31 @@ export default SearchPage = (props) => {
 			generalSearchInput: foodItem
 		}
 
-		axios.post(searchResultsEndpoint, postData, axiosConfig)
-			.then((response) => {
-				if (response["data"]["totalHits"] != 0) {
-					// Add to recently searched and update state
-					storeRecentlySearchedData(foodItem).then(() => {
-						retrieveRecentlySearchedData().then((resp) => {
-							console.log("recent ahh: ", resp);
-							setRecentlySearchedItems(resp);
-						}).catch((err) => {
-							console.log(err);
-						});	
-					}).catch((error) => {
-						console.log(error);
-					})
-					
-					let searchResults = response["data"]["foods"];
-					storeSearchResults(searchResults);
-					navigation.navigate('SearchResultsPage', {
-						foodItems: response["data"]["foods"]
-					})
-				} else {
-					alert('No result found for search input ' + foodItem.toString());
-				}
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+		axios.post(searchResultsEndpoint, postData, axiosConfig).then((response) => {
+			if (response["data"]["totalHits"] != 0) {
+				// Add to recently searched and update state
+				storeRecentlySearchedData(foodItem).then(() => {
+					retrieveRecentlySearchedData().then((resp) => {
+						console.log("recent ahh: ", resp);
+						setRecentlySearchedItems(resp);
+					}).catch((err) => {
+						console.log(err);
+					});	
+				}).catch((error) => {
+					console.log(error);
+				})
+				
+				let searchResults = response["data"]["foods"];
+				storeSearchResults(searchResults);
+				navigation.navigate('SearchResultsPage', {
+					foodItems: response["data"]["foods"]
+				})
+			} else {
+				alert('No result found for search input ' + foodItem.toString());
+			}
+		}).catch((err) => {
+			console.log(err);
+		});
 	}
 
 	// For when there's no recently searched items (used by FlatList component)
