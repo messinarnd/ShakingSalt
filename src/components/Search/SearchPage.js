@@ -22,7 +22,6 @@ export default SearchPage = (props) => {
 	useEffect(() => {
 		retrieveRecentlySearchedData()
 			.then((resp) => {
-				console.log("recent ahh: ", resp[0]);
 				setRecentlySearchedItems(resp);
 			})
 			.catch((err) => {
@@ -47,7 +46,6 @@ export default SearchPage = (props) => {
 				// Add to recently searched and update state
 				storeRecentlySearchedData(foodItem).then(() => {
 					retrieveRecentlySearchedData().then((resp) => {
-						console.log("recent ahh: ", resp);
 						setRecentlySearchedItems(resp);
 					}).catch((err) => {
 						console.log(err);

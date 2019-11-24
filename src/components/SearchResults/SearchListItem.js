@@ -32,12 +32,16 @@ export default SearchListItem = (props) => {
         });
     }, []);
 
+    // Low sodium is less than 140 mg of sodium per RACC (around 50g). Our nutrition measurements are based on 100g servings
     let color;
-    if (sodiumLevel < 140) {
+    if (sodiumLevel < 280) {
+        // Low Sodium
         color = "success";
-    } else if (sodiumLevel > 480) {
+    } else if (sodiumLevel > 960) {
+        // High Sodium
         color = "error";
     } else {
+        // Average Sodium
         color = "warning";
     }
 
