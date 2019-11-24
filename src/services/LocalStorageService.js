@@ -60,6 +60,27 @@ export const storeRecentlySearchedData = async (foodItem) => {
     }
 };
 
+// Read our previous search results from AsyncStorage
+export const retrieveSearchResults = async (fdcId) => {
+    console.log('Fetching searched food list');
+    try {
+	  const savedList = await AsyncStorage.getItem(SEARCH_RESULTS_STORAGE_KEY);
+	  let retVal;
+      if (savedList !== null) {
+        let searchResults = JSON.parse(savedList);
+		let id = fdcId;
+		retVal = searchResults.filter((value, index, arr) => {
+			return value.fdcId != id;
+		});
+      } else {
+		retVal = [];
+	  }
+	  return retVal;
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
 
 // Function for storing the most recent search results (list of food items from USDA database)
 // The search results are used again when finding the list of alternatives to avoid making unnecessary requests

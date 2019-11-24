@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
-    FlatList
-} from 'react-native';
+import { ScrollView, StyleSheet, Text, View, FlatList } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import SearchListItem from './SearchListItem';
 
@@ -18,6 +12,7 @@ export default SearchResultsPage = (props) => {
     // currently used for passing the food item search
     global.test = foodItems;
     global.filtered = foodItems;
+    global.foodItemsWithNutrients = [];
 
     // For when there's no search results (used by FlatList component)
 	showEmptyComponent = () => {
@@ -34,10 +29,8 @@ export default SearchResultsPage = (props) => {
                 <FlatList
                     data = {foodItems}
                     ListEmptyComponent={this.showEmptyComponent}
-                    renderSectionHeader={() => <Text style={styles.sectionHeader}>Search Results</Text>}
                     renderItem={({item}) =>
                         <SearchListItem navigation={navigation} item={item}></SearchListItem>
-                        // <ListItem title={item.brandOwner ? `${item.description} - ${item.brandOwner}` : `${item.description}`} onPress={() => console.log("clicked: ", item)}/>
                     }
                     ListHeaderComponent={<ListItem bottomDivider stlye={styles.sectionHeader} title="Search Results                                Sodium per 100g"></ListItem>}
                     keyExtractor={(item, index) => index.toString()}

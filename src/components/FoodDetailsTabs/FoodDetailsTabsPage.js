@@ -9,15 +9,16 @@ export default FoodDetailsTabsPage = (props) => {
   const { navigation } = props;
   const { params } = navigation.state;
   const foodDetails = params.foodDetails;
+  const sodiumLevel = params.sodiumContent;
 
   return (
     <Container>
         <Tabs>
             <Tab heading="Details">
-                <FoodDetailsPage foodDetails={foodDetails}/>
+                <FoodDetailsPage foodDetails={foodDetails} sodiumLevel={sodiumLevel}/>
             </Tab>
             <Tab heading="Alternatives">
-                <AlternativesPage navigation={navigation} foodDetails={foodDetails}/>
+                <AlternativesPage navigation={navigation} foodDetails={foodDetails} sodiumLevel={sodiumLevel}/>
             </Tab>
         </Tabs>
     </Container>
@@ -27,3 +28,5 @@ export default FoodDetailsTabsPage = (props) => {
 FoodDetailsTabsPage.navigationOptions = {
   title: 'Food Details',
 };
+
+// Food Details Tabs TODOs:

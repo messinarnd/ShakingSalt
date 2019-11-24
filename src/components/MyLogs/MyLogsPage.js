@@ -13,7 +13,6 @@ import { ListItem } from 'react-native-elements';
 import { retrieveFoodLog } from '../../services/LocalStorageService';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-const LOG_STORAGE_KEY = 'LOG_ITEMS_STORAGE' // Don't put it in Constants cause it doesn't get initialized before call to log DB cause react suX
 
 
 // The logs page should have tabs at the top like __DAY__|__WEEK__|__MONTH__|__YEAR__

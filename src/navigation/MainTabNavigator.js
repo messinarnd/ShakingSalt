@@ -8,6 +8,9 @@ import SearchPage from "../components/Search/SearchPage";
 import MyLogsPage from "../components/MyLogs/MyLogsPage";
 import SearchResultsPage from "../components/SearchResults/SearchResultsPage";
 import FoodDetailsTabsPage from "../components/FoodDetailsTabs/FoodDetailsTabsPage";
+import MyLogsTabsPage from "../components/MyLogs/MyLogsTabsPage";
+import FoodDetailsPage from '../components/FoodDetailsTabs/FoodDetailsPage';
+import AlternativesPage from '../components/FoodDetailsTabs/AlternativesPage';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -20,10 +23,6 @@ const SearchStack = createStackNavigator(
     Search: SearchPage,
     SearchResultsPage: SearchResultsPage,
     FoodDetailsTabsPage: FoodDetailsTabsPage
-    // Add any other screens that relate to this stack here
-    // Food details page will be one once we implement that
-    // Adding here allows 'navigation' to be accessed from the props in that component
-    // It might also be needed just to go to that page even if you aren't navigating once there
   },
   config
 );
@@ -41,7 +40,8 @@ SearchStack.path = '';
 // Setup for the 'My Logs' tab
 const MyLogsStack = createStackNavigator(
   {
-    MyLogs: MyLogsPage,
+    // MyLogs: MyLogsPage,
+    MyLogs: MyLogsTabsPage
   },
   config
 );
@@ -55,6 +55,8 @@ MyLogsStack.navigationOptions = {
 
 MyLogsStack.path = '';
 
+
+// Putting the two separate navigators together into the tab navigator
 const tabNavigator = createBottomTabNavigator({
   Search: SearchStack,
   MyLogs: MyLogsStack

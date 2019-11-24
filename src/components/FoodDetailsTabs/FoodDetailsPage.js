@@ -15,23 +15,18 @@ import { Card, ListItem, Overlay } from 'react-native-elements';
 import { storeFoodLog } from '../../services/LocalStorageService';
 import { gray, grey } from 'ansi-colors';
 
-// disables the warnings lmao
+// disables the warnings
 // TODO: fix this later!!
 console.disableYellowBox = true;
 
-const STORAGE_KEY = 'LOG_ITEMS_STORAGE' // Don't put it in Constants cause it doesn't get initialized before call to log DB cause react suX
-var nutritionVisible = false;
-// import { searchResultsEndpoint, axiosConfig } from "../../services/USDAFoodService";
-// const axios = require("axios");
 
 export default FoodDetailsPage = (props) => {
-  const { foodDetails } = props
-  Object.freeze(foodDetails)
+  const { foodDetails, sodiumLevel } = props;
+  Object.freeze(foodDetails);
   
   const ogNutrientsObj = foodDetails.foodNutrients.reduce((obj, thisNutrient) => {
     nutrientName = thisNutrient.nutrient.name;
     nutrientAmount = thisNutrient.amount;
-    // idk if we actually need the unit or not
     nutrientUnit = thisNutrient.nutrient.unitName;
     tempObj = {
       "amount": nutrientAmount,
@@ -76,21 +71,8 @@ export default FoodDetailsPage = (props) => {
     setNutrientsObj(newNutrientObj);
   }
 
-  console.log("IS VISIBLE: " + nutritionVisible); // What is this??
   return (
     <View style={styles.container}>
-      {/* <Overlay 
-        isVisible={nutritionVisible} 
-        onBackdropPress={() => {
-        nutritionVisible = false
-        // TODO: Reload 
-        }}>
-        {Object.keys(nutrientsObj).map((nutrientName, index) => {
-          if (nutrientName != "calories" || nutrientName != "sodium") {
-            return (<ListItem title={nutrientName} rightSubtitle={nutrientsObj[nutrientName]["value"]}/>)
-          }
-        })}
-      </Overlay> */}
       <ScrollView style={styles.container}
         contentContainerStyle={styles.contentContainer}>
         <View>
@@ -127,12 +109,7 @@ export default FoodDetailsPage = (props) => {
                 }
               })}
               <View style={{ flex: 1, flexDirection: 'row-reverse', padding: 10 }}>
-                {/* <Button title="Log" onPress={storeData} /> */}
                 <Button title="Log" onPress={() => storeFoodLog(foodDetails, servingSize, servingAmount, nutrientsObj)} />
-                {/* <Button title="Nutritional Information" onPress={() => {
-                  nutritionVisible = true;
-                  // TODO: Reload 
-                }} /> */}
               </View>
             </View>
           </Card>
