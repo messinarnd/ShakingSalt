@@ -85,7 +85,7 @@ export default SearchPage = (props) => {
             contentContainerStyle={styles.contentContainer}>
             <View style={styles.MainContainer}>
               <FlatList
-				data = {recentlySearchedItems}
+				data = {recentlySearchedItems.sort((a, b) => {return b.timestamp - a.timestamp})} // Sorting in reverse chronological order
                 ListEmptyComponent={this.showEmptyComponent}
 				renderItem={({item}) =>
 					<ListItem title={item.searchedText} onPress={() => searchItem(item.searchedText)}/>
@@ -120,8 +120,5 @@ const styles = StyleSheet.create({
 
 // SearchPage TODOs:
 // TODO: Implement removing recently searched item
-// TODO: Have recently searched items show up in chronological order
-// 		- most recently searched at top
-// 		- will have to edit the storeRecentlySearchedData function so that it removes the first duplicate and adds it back (to maintain chronological order)
 // TODO: Implement FlatListItemSeparator and add "ItemSeparatorComponent = {this.FlatListItemSeparator}" to FlatList props
 // TODO: Make the UI look good

@@ -34,13 +34,15 @@ export const storeRecentlySearchedData = async (foodItem) => {
 
       // Declared as a JSON object for future expansion
       let recSearchItem = {
-        searchedText: foodItem
+		searchedText: foodItem,
+		timestamp: new Date().getTime()
       }
 
       // Adding the item to the JSON array if it doesn't already exist (better UI)
       let duplicate = false;
       for (let i = 0; i < allRecSearchedItems.length; i++) {
-        if (JSON.stringify(allRecSearchedItems[i]) === JSON.stringify(recSearchItem)) {
+		// Compare only based off of searched string and not the entire object since time is always different
+        if (JSON.stringify(allRecSearchedItems[i].searchedText.toLowerCase()) === JSON.stringify(recSearchItem.searchedText.toLowerCase())) {
           duplicate = true;
           break;
         }
