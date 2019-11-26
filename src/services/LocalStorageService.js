@@ -20,6 +20,17 @@ export const retrieveRecentlySearchedData = async() => {
     }
 };
 
+export const removeRecentlySearchedData = async (timestamp) => {
+	try {
+		const retrievedItem = await AsyncStorage.getItem(REC_SEARCHED_STORAGE_KEY);
+        let itemsToJson = JSON.parse(retrievedItem);
+		filteredData = itemsToJson.filter(item => item.timestamp !== timestamp);
+
+		await AsyncStorage.setItem(REC_SEARCHED_STORAGE_KEY, JSON.stringify(filteredData)).then(() => console.log('Removed item from recently searched'));		
+	} catch (error) {
+		console.log(error.message);
+	}
+}
 
 // Function for storing a recently searched item in local storage (writing)
 export const storeRecentlySearchedData = async (foodItem) => {
