@@ -43,27 +43,25 @@ export const storeRecentlySearchedData = async (foodItem) => {
         allRecSearchedItems = []
       }
 
-      // Declared as a JSON object for future expansion
-      let recSearchItem = {
-		searchedText: foodItem,
-		timestamp: new Date().getTime()
-      }
-
-      // Adding the item to the JSON array if it doesn't already exist (better UI)
-      let duplicate = false;
-      for (let i = 0; i < allRecSearchedItems.length; i++) {
-		// Compare only based off of searched string and not the entire object since time is always different
-        if (JSON.stringify(allRecSearchedItems[i].searchedText.toLowerCase()) === JSON.stringify(recSearchItem.searchedText.toLowerCase())) {
-          duplicate = true;
-          break;
+        // Declared as a JSON object for future expansion
+        let recSearchItem = {
+            // Formatting searched string as Capitalized on first character only
+            searchedText: foodItem.charAt(0).toUpperCase() + foodItem.slice(1).toLowerCase(),
+            timestamp: new Date().getTime()
         }
-      }
 
-      if (!duplicate) {
+        // Adding the item to the JSON array if it doesn't already exist (better UI)
+        for (let i = 0; i < allRecSearchedItems.length; i++) {
+            // Compare only based off of searched string and not the entire object since time is always different
+            // NOTE: might not need the lowerCase conversion anymore since input as formatted above, but this is defensive programming (kinda) fam
+            if (JSON.stringify(allRecSearchedItems[i].searchedText.toLowerCase()) === JSON.stringify(recSearchItem.searchedText.toLowerCase())) {
+                console.log("storeRecentlySearchedData(): found duplicate, removing and re-adding..");
+                allRecSearchedItems.splice(i, 1); // Removing duplicate at index i (will be added with a new timestamp again)
+                break;
+            }
+        }
+        // Adding the new timestamped data item
         allRecSearchedItems.push(recSearchItem);
-      } else {
-        console.log("Duplicate found. Not adding to recently searched array.");
-      }
 
       // console.log('Current recently searched DB:')
       // console.log(allRecSearchedItems);
@@ -169,7 +167,6 @@ export const storeFoodLog = async (foodDetails, servingSize, servingAmount, nutr
 
 		// Change totals for the current day, month, year and add new log
 		updated_logs = updateLogs(allLogs, foodDetails, servingSize, servingAmount, nutrientsObj);
-
 		console.log('Updated log DB: ', updated_logs)
 		return await AsyncStorage.setItem(LOG_ITEMS_STORAGE_KEY, JSON.stringify(updated_logs)).then(() => alert('Logged!'));
 	} catch (error) {
@@ -233,10 +230,8 @@ updateLogs = (allLogs, foodDetails, servingSize, servingAmount, nutrientsObj) =>
 		allLogs[year]["totals"] = nutrientsObj;
 	}
 
-
 	// Add log to logs - use the formatted timestamp string as the key
 	allLogs[year][month][day][formattedDateTime] = log;
-
 	console.log("after all updating: ", allLogs);
 	return allLogs;
 }
