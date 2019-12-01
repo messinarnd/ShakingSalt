@@ -33,21 +33,21 @@ export default MonthlyLogsPage = (props) => {
             <View style={{flex:1, flexDirection:"row", justifyContent:"space-between"}}>
                 <Ionicons size={20} name={Platform.OS === 'ios' ? 'ios-arrow-back' : 'md-arrow-dropleft'} onPress={() => {
                     console.log("month left clicked");
-                    if (month-1 == 0) {
+                    if (parseInt(month)-1 == 0) {
                         setYear(year-1);
-                        setMonth(12);
+                        setMonth(twoDigitFormat(12));
                     } else {
-                        setMonth(month-1);
+                        setMonth(twoDigitFormat(parseInt(month)-1));
                     }
                 }}></Ionicons>
-                <Title>{months[month] + ", " + year}</Title>
+                <Title>{months[parseInt(month)] + ", " + year}</Title>
                 <Ionicons size={20} name={Platform.OS === 'ios' ? 'ios-arrow-forward' : 'md-arrow-dropright'} onPress={() => {
                     console.log("month right clicked");
-                    if (month+1 == 13) {
+                    if (parseInt(month)+1 == 13) {
                         setYear(year+1);
-                        setMonth(1);
+                        setMonth(twoDigitFormat(1));
                     } else {
-                        setMonth(month + 1);
+                        setMonth(twoDigitFormat(parseInt(month) + 1));
                     }
                 }}></Ionicons>
             </View>

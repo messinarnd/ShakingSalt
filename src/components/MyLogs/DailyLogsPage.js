@@ -29,28 +29,6 @@ export default DailyLogsPage = (props) => {
     }
 
     useEffect(() => {
-        if (day == 0) {
-            // Go back a month
-            if (month - 1 == 0) {
-                setMonth(12);
-                setYear(year-1);
-                setDay(daysInMonths[12]);
-            } else {
-                setDay(daysInMonths[month-1]);
-                setMonth(month-1);
-            }
-        } else if (day > daysInMonths[month]) {
-            // Go to next month
-            if (month + 1 == 13) {
-                setMonth(1);
-                setYear(year+1);
-                setDay(1);
-            } else {
-                setDay(1);
-                setMonth(month+1);
-            }
-        }
-
         setDailyLogs(((logs[year] != null) && (logs[year][month] != null)) ? logs[year][month][day] : null);
     }, [day]);
 
@@ -59,34 +37,35 @@ export default DailyLogsPage = (props) => {
             <View style={{flex:1, flexDirection:"row", justifyContent:"space-between"}}>
                 <Ionicons size={20} name={Platform.OS === 'ios' ? 'ios-arrow-back' : 'md-arrow-dropleft'} onPress={() => {
                     console.log("day left clicked");
-                    if (day-1 == 0) {
-                        if (month-1 == 0) {
-                            setMonth(12);
+                    if (parseInt(day)-1 == 0) {
+                        if (parseInt(month)-1 == 0) {
+                            setMonth(twoDigitFormat(12));
                             setYear(year-1);
                             setDay(daysInMonths[12]);
                         } else {
-                            setMonth(month-1);
-                            setDay(daysInMonths[month-1]);
+                            setMonth(twoDigitFormat(parseInt(month)-1));
+                            setDay(daysInMonths[parseInt(month)-1]);
                         }
                     } else {
-                        setDay(day-1);
+                        setDay(twoDigitFormat(parseInt(day)-1));
                     }
                     setDayOfWeek(((dayOfWeek-1)+7)%7);
                 }}></Ionicons>
-                <Title>{daysOfWeek[dayOfWeek] + " " + months[month] + " " + (day[0]==0 ? day[1] : day) + ", " + year}</Title>
+                <Title>{daysOfWeek[dayOfWeek] + " " + months[parseInt(month)] + " " + parseInt(day) + ", " + year}</Title>
                 <Ionicons size={20} name={Platform.OS === 'ios' ? 'ios-arrow-forward' : 'md-arrow-dropright'} onPress={() => {
                     console.log("day right clicked");
-                    if (day+1 > daysInMonths[month]) {
-                        if (month + 1 == 13) {
-                            setMonth(1);
+                    console.log("day+1: ", day+1);
+                    if (parseInt(day)+1 > daysInMonths[parseInt(month)]) {
+                        if (parseInt(month) + 1 == 13) {
+                            setMonth(twoDigitFormat(1));
                             setYear(year+1);
-                            setDay(1);
+                            setDay(twoDigitFormat(1));
                         } else {
-                            setMonth(month+1);
-                            setDay(1);
+                            setMonth(twoDigitFormat(parseInt(month)+1));
+                            setDay(twoDigitFormat(1));
                         }
                     } else {
-                        setDay(day+1);
+                        setDay(twoDigitFormat(parseInt(day)+1));
                     }
                     setDayOfWeek(((dayOfWeek+1)+7)%7);
                 }}></Ionicons>
