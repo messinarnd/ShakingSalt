@@ -5,7 +5,8 @@ import {
   View,
   Button,
   TextInput,
-  Picker
+  Picker,
+  Text
 } from 'react-native';
 import { Card, ListItem, Overlay } from 'react-native-elements';
 import { storeFoodLog } from '../../services/LocalStorageService';
@@ -74,7 +75,30 @@ export default FoodDetailsPage = (props) => {
         <View>
           <Card title={foodDetails.description + " - " + foodDetails.brandOwner}>
             <View>
-              <View style={{ flex: 0, flexDirection: 'row' }}>
+              <View style={{flex:1, alignContent:"center", justifyContent:"center", alignItems:"center", borderWidth:0, margin:0, padding:0}}>
+                <Text style={{fontSize:18, borderWidth:0, margin:0, padding:0}}>How much did you eat?</Text>
+                <View style={{flex:1, flexDirection:'row', borderWidth:0, margin:0, padding:0}}>
+                  <TextInput
+                    style={{flex:2, fontSize:20}}
+                    placeholder="Type Amount Here.."
+                    keyboardType="numeric"
+                    onChangeText={(text) => { setServingAmount(text ? text : 0); }}
+                  />
+                  <Picker
+                    selectedValue={servingSize}
+                    style={{flex:2}}
+                    onValueChange={(itemValue, itemIndex) => { setServingSize(itemValue) }}
+                  >
+                    <Picker.Item label="g" value="g" />
+                    <Picker.Item label="oz" value="oz" />
+                    <Picker.Item label="lbs" value="lbs" />
+                    <Picker.Item label="mg" value="mg" />
+                  </Picker>
+                </View>
+              </View>
+              
+            
+              {/* <View style={{ flex: 0, flexDirection: 'row' }}>
                 <View style={{ flex: 2, fontSize: 14 }}><ListItem key={0} title={"Serving Size: "} bottomDivider /></View>
                 <View style={{ flex: 1, justifyContent: 'center' }}>
                   <TextInput
@@ -95,7 +119,7 @@ export default FoodDetailsPage = (props) => {
                     <Picker.Item label="mg" value="mg" />
                   </Picker>
                 </View>
-              </View>
+              </View> */}
               {/* TODO: Fix the high/low regulations for sodium and calories - everything is base on "per seving" which we don't have */}
               <ListItem key={2} title={"Calories: "} rightSubtitleStyle={{ color:(nutrientsObj["Energy"]["amount"] > (2000*0.2) ? "red" : (nutrientsObj["Energy"]["amount"] < (2000*0.05) ? 'green' : 'orange'))}} rightSubtitle={(nutrientsObj["Energy"]["amount"]).toString()} bottomDivider />
               <ListItem key={3} title={"Sodium: "} rightSubtitleStyle={{ color:(nutrientsObj["Sodium, Na"]["amount"] > (2300*0.2) ? "red" : (nutrientsObj["Sodium, Na"]["amount"] < (2300*0.05) ? 'green' : 'orange'))}} rightSubtitle={(nutrientsObj["Sodium, Na"]["amount"]).toString()} bottomDivider />
