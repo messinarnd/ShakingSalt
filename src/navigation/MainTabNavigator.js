@@ -5,12 +5,9 @@ import { createBottomTabNavigator } from 'react-navigation-tabs'
 
 import TabBarIcon from '../components/MainTabBar/TabBarIcon';
 import SearchPage from "../components/Search/SearchPage";
-import MyLogsPage from "../components/MyLogs/MyLogsPage";
 import SearchResultsPage from "../components/SearchResults/SearchResultsPage";
 import FoodDetailsTabsPage from "../components/FoodDetailsTabs/FoodDetailsTabsPage";
 import MyLogsTabsPage from "../components/MyLogs/MyLogsTabsPage";
-import FoodDetailsPage from '../components/FoodDetailsTabs/FoodDetailsPage';
-import AlternativesPage from '../components/FoodDetailsTabs/AlternativesPage';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },

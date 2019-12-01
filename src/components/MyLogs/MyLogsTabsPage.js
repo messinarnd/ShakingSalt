@@ -3,7 +3,6 @@ import { Container, Tab, Tabs } from 'native-base';
 import { View, ActivityIndicator } from 'react-native';
 
 import DailyLogsPage from './DailyLogsPage';
-import WeeklyLogsPage from './WeeklyLogsPage';
 import MonthlyLogsPage from './MonthlyLogsPage';
 import YearlyLogsPage from './YearlyLogsPage';
 
@@ -11,16 +10,12 @@ import { retrieveFoodLog } from '../../services/LocalStorageService';
 
 
 export default MyLogsTabsPage = (props) => {
-    const { navigation } = props;
-
-    const [isRefreshing, setRefreshing] = useState(false);
 	const [isLoading, setLoading] = useState(true);
 	const [foodLogsObj, setFoodLogsObj] = useState([]);
 	
 	// Get the foodLogsObj
 	useEffect(() => {
 		retrieveFoodLog().then((resp) => {
-			console.log("setting: ", resp);
 			setFoodLogsObj(resp);
 			setLoading(false);
 		}).catch((err) => {
@@ -28,8 +23,6 @@ export default MyLogsTabsPage = (props) => {
 			setLoading(false);
 		});
 	}, []);
-
-	// Add a separate useEffect if the logs page is not updating properly
 
 	return (
         <Container>
@@ -39,16 +32,13 @@ export default MyLogsTabsPage = (props) => {
 					</View>)
 				: (<Tabs>
                         <Tab heading="Day">
-                            <DailyLogsPage logs={foodLogsObj} />
-                        </Tab>
-                        <Tab heading="Week">
-                            <WeeklyLogsPage logs={foodLogsObj} />
+                            <DailyLogsPage foodLogs={foodLogsObj} />
                         </Tab>
                         <Tab heading="Month">
-                            <MonthlyLogsPage logs={foodLogsObj} />
+                            <MonthlyLogsPage foodLogs={foodLogsObj} />
                         </Tab>
                         <Tab heading="Year">
-                            <YearlyLogsPage logs={foodLogsObj} />
+                            <YearlyLogsPage foodLogs={foodLogsObj} />
                         </Tab>
                     </Tabs>)}
         </Container>
@@ -58,3 +48,7 @@ export default MyLogsTabsPage = (props) => {
 MyLogsTabsPage.navigationOptions = {
   title: 'My Logs',
 };
+
+// MyLogs TODOs:
+// TODO: create a weekly logs page tab (this is harder since you have to get the previous 7 daily logs) - probably not in MVP scope
+// Make the refresh on one of the logs tabs refresh all other tabs as well

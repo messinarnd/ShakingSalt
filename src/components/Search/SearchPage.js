@@ -90,23 +90,25 @@ export default SearchPage = (props) => {
 				data={recentlySearchedItems.sort((a, b) => {return b.timestamp - a.timestamp})} // Sorting in reverse chronological order
 				ListEmptyComponent={this.showEmptyComponent}
 				keyExtractor={(item, index) => index.toString()}
-				renderItem={({item}) => (
-					<SwipeView
-						disableSwipeToRight = {true}
-						// swipeToOpenPercent = {50}
-						renderVisibleContent = {() => 
-							<ListItem title={item.searchedText} onPress={() => searchItem(item.searchedText)}/>         
-						}
+				renderItem={({item}) => {
+					return (
+						<SwipeView
+							disableSwipeToRight = {true}
+							// swipeToOpenPercent = {50}
+							renderVisibleContent = {() => 
+								<ListItem title={item.searchedText} onPress={() => searchItem(item.searchedText)}/>         
+							}
 
-						renderRightView={() => (
-							<View style={styles.swipeRow}>
-								<Text style={styles.colorStyle}>REMOVE</Text>
-							</View>
-						)}
-						
-						onSwipedLeft = {() => this.deleteItemByTimestamp(item.timestamp)}
-					/>
-			    )}
+							renderRightView={() => (
+								<View style={styles.swipeRow}>
+									<Text style={styles.colorStyle}>REMOVE</Text>
+								</View>
+							)}
+							
+							onSwipedLeft = {() => this.deleteItemByTimestamp(item.timestamp)}
+						/>
+					)
+				}}
               />
             </View>
           </ScrollView>

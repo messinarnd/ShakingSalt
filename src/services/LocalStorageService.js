@@ -110,7 +110,7 @@ export const retrieveFoodLog = async() => {
 		let retVal = {};
 		if (retrievedItem) {
 			retVal = JSON.parse(retrievedItem);
-		}
+        }
 		return retVal;
     } catch (error) {
 		console.log(error.message);
@@ -120,7 +120,7 @@ export const retrieveFoodLog = async() => {
 
 // Function for logging food info when user clicks on the log item button
 export const storeFoodLog = async (foodDetails, servingSize, servingAmount, nutrientsObj) => {
-	// The food logs should look like:
+    // The food logs should look like:
 	// {
 	//   'yyyy': {
 	//     'mm': {
@@ -156,56 +156,81 @@ export const storeFoodLog = async (foodDetails, servingSize, servingAmount, nutr
 	console.log("Logging new item..");
 	try {
 		// Get current logs
-		console.log("in here1")
 		const existingLogs = await AsyncStorage.getItem(LOG_ITEMS_STORAGE_KEY);
-		console.log("in here2")
 		let allLogs = JSON.parse(existingLogs);
 		if (!allLogs) {
 			console.log("No logs found. Creating new empty logs object.");
-			allLogs = {};
-		}
-
-		// Change totals for the current day, month, year and add new log
-		updated_logs = updateLogs(allLogs, foodDetails, servingSize, servingAmount, nutrientsObj);
-		console.log('Updated log DB: ', updated_logs)
+			updated_logs = createLogTemplate(foodDetails, servingSize, servingAmount, nutrientsObj);
+		} else {
+            console.log("Existing logs. Adding new entry");
+            updated_logs = updateLogs(allLogs, foodDetails, servingSize, servingAmount, nutrientsObj);
+        }
+		// console.log('Updated log DB: ', updated_logs)
 		return await AsyncStorage.setItem(LOG_ITEMS_STORAGE_KEY, JSON.stringify(updated_logs)).then(() => alert('Logged!'));
 	} catch (error) {
 		console.log(error.message);
 	}
 };
 
-updateLogs = (allLogs, foodDetails, servingSize, servingAmount, nutrientsObj) => {
-	console.log("before any updating: ", allLogs);
-	// Get time information and create new log entry
-	let date = new Date(); // new date object for getting timestamp properties
+createLogTemplate = (foodDetails, servingSize, servingAmount, nutrientsObj) => {
+    // Get time information and create new log entry
+    let date = new Date(); // new date object for getting timestamp properties
+    let timestamp = date.getTime();
 	let day = twoDigitFormat(date.getDate());
 	let month = twoDigitFormat(date.getMonth() + 1);
 	let year = date.getFullYear();
 	let hours = twoDigitFormat(date.getHours());
 	let min = twoDigitFormat(date.getMinutes());
 	let sec = twoDigitFormat(date.getSeconds());
+    let formattedDateTime = month + '/' + day + '/' + year + ' ' + hours + ':' + min + ':' + sec;
+
+    let theLog = createLog(foodDetails, servingSize, servingAmount, nutrientsObj, formattedDateTime);
+
+    allLogs = {};
+    allLogs[year] = {};
+    allLogs[year][month] = {};
+    allLogs[year][month][day] = {};
+    allLogs[year][month][day][timestamp] = theLog;
+    allLogs[year][month][day]["totals"] = nutrientsObj;
+    allLogs[year][month]["totals"] = nutrientsObj;
+    allLogs[year]["totals"] = nutrientsObj;
+
+    return allLogs;
+}
+
+updateLogs = (allLogs, foodDetails, servingSize, servingAmount, nutrientsObj) => {
+	console.log("before any updating: ", allLogs);
+	// Get time information and create new log entry
+    let date = new Date(); // new date object for getting timestamp properties
+    let timestamp = date.getTime();
+    let day = twoDigitFormat(date.getDate());
+	let month = twoDigitFormat(date.getMonth() + 1);
+	let year = date.getFullYear();
+	let hours = twoDigitFormat(date.getHours());
+	let min = twoDigitFormat(date.getMinutes());
+	let sec = twoDigitFormat(date.getSeconds());
 	let formattedDateTime = month + '/' + day + '/' + year + ' ' + hours + ':' + min + ':' + sec;
-	let log = createLog(foodDetails, servingSize, servingAmount, nutrientsObj, formattedDateTime);
+    let log = createLog(foodDetails, servingSize, servingAmount, nutrientsObj, formattedDateTime);
 
 	console.log("in here3")
 	// Update totals for old logs
 	if (allLogs[year]) {
 		console.log("in here4")
 		// Update the yearly total and move on to month
-		console.log("before yearly: ", allLogs[year]["totals"]);
-		allLogs[year]["totals"] = updateTotals(allLogs[year], nutrientsObj);
+        console.log("before yearly1: ", allLogs[year]["totals"]);
+        allLogs[year]["totals"] = updateTotals(allLogs[year]["totals"], nutrientsObj);
 		console.log("after yearly: ", allLogs[year]["totals"]);
 
 		if (allLogs[year][month]) {
 			// Update the monthly total and move on to day
 			console.log("before monthly: ", allLogs[year][month]["totals"]);
-			allLogs[year][month]["totals"] = updateTotals(allLogs[year][month], nutrientsObj);
+			allLogs[year][month]["totals"] = updateTotals(allLogs[year][month]["totals"], nutrientsObj);
 			console.log("after monthly: ", allLogs[year][month]["totals"]);
 
 			if (allLogs[year][month][day]) {
 				// Update the daily total
 				console.log("before daily: ", allLogs[year][month][day]["totals"]);
-				allLogs[year][month][day]["totals"] = updateTotals(allLogs[year][month][day], nutrientsObj);
+				allLogs[year][month][day]["totals"] = updateTotals(allLogs[year][month][day]["totals"], nutrientsObj);
 				console.log("after daily: ", allLogs[year][month][day]["totals"]);
 			} else {
 				// Add a new daily total category - should just be nutrientsObj now
@@ -231,7 +256,7 @@ updateLogs = (allLogs, foodDetails, servingSize, servingAmount, nutrientsObj) =>
 	}
 
 	// Add log to logs - use the formatted timestamp string as the key
-	allLogs[year][month][day][formattedDateTime] = log;
+	allLogs[year][month][day][timestamp] = log;
 	console.log("after all updating: ", allLogs);
 	return allLogs;
 }
@@ -242,7 +267,8 @@ twoDigitFormat = (num) => {
 
 createLog = (foodDetails, servingSize, servingAmount, nutrientsObj, formattedDateTime) => {
 	var log = {
-		'timestamp':formattedDateTime,
+        "type": "logs",
+		'formattedTime':formattedDateTime,
 		// logTimeStamp: formattedDateTime,
 		'fdcId': foodDetails.fdcId,
 		// logFdcId: foodDetails.fdcId,
@@ -259,8 +285,8 @@ createLog = (foodDetails, servingSize, servingAmount, nutrientsObj, formattedDat
 	return log;
 }
 
-updateTotals = (logsToUpdate, nutrientsObj) => {
-	let totalObj = logsToUpdate['totals']; // this should now be a nutrients object with all running yearly totals
+updateTotals = (totalObj, nutrientsObj) => {
+	// let totalObj = logsToUpdate['totals']; // this should now be a nutrients object with all running yearly totals
 	console.log("old yearly total: ", totalObj);
 	let totalObjCopy = {...totalObj};
 	let newTotalObj = Object.keys(totalObjCopy).reduce((obj, nutrientName) => {
@@ -274,7 +300,5 @@ updateTotals = (logsToUpdate, nutrientsObj) => {
 		return obj;
 	}, {});
 	console.log("updating yearly total: ", newTotalObj);
-	logsToUpdate["totals"] = newTotalObj;
-	console.log("after change: ", logsToUpdate["totals"]);
-	return logsToUpdate;
+	return newTotalObj;
 }

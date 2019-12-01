@@ -31,19 +31,6 @@ export default SearchListItem = (props) => {
         });
     }, []);
 
-    // Low sodium is less than 140 mg of sodium per RACC (around 50g). Our nutrition measurements are based on 100g servings
-    let color;
-    if (sodiumLevel < 280) {
-        // Low Sodium
-        color = "success";
-    } else if (sodiumLevel > 960) {
-        // High Sodium
-        color = "error";
-    } else {
-        // Average Sodium
-        color = "warning";
-    }
-
     getFoodDetails = (fdcId, sodLvl) => {
         axios.get(getFoodDetailsEndpoint(fdcId), axiosConfig).then((response) => {
                 global.filtered = (global.foodItemsWithNutrients).filter(function(value, index, arr){
@@ -62,7 +49,9 @@ export default SearchListItem = (props) => {
         <View>
             <ListItem
                 title={item.brandOwner ? `${item.description} - ${item.brandOwner}` : `${item.description}`}
-                badge= { {value:sodiumLevel + " mg", status:color}}
+                rightSubtitle={sodiumLevel.toString() + " mg"}
+                // Low sodium is less than 140 mg of sodium per RACC (around 50g). Our nutrition measurements are based on 100g servings
+                rightSubtitleStyle={{color:(sodiumLevel > 960 ? 'red' : (sodiumLevel < 280 ? 'green' : 'orange'))}}
                 onPress={() => getFoodDetails(item.fdcId, item.sodiumLevel)}
                 bottomDivider
                 chevron

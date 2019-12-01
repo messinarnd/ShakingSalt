@@ -2,13 +2,9 @@ import React, { useState, useEffect } from 'react';
 import {
   ScrollView,
   StyleSheet,
-  Text,
   View,
   Button,
   TextInput,
-  Container,
-  Col,
-  Row,
   Picker
 } from 'react-native';
 import { Card, ListItem, Overlay } from 'react-native-elements';
@@ -100,12 +96,13 @@ export default FoodDetailsPage = (props) => {
                   </Picker>
                 </View>
               </View>
-              <ListItem key={2} title={"Calories: "} rightSubtitle={nutrientsObj["Energy"]["amount"]} bottomDivider />
-              <ListItem key={3} title={"Sodium: "} rightSubtitle={nutrientsObj["Sodium, Na"]["amount"]} bottomDivider />
-              <ListItem key={4} title={"Other Information: "} bottomDivider />
+              {/* TODO: Fix the high/low regulations for sodium and calories - everything is base on "per seving" which we don't have */}
+              <ListItem key={2} title={"Calories: "} rightSubtitleStyle={{ color:(nutrientsObj["Energy"]["amount"] > (2000*0.2) ? "red" : (nutrientsObj["Energy"]["amount"] < (2000*0.05) ? 'green' : 'orange'))}} rightSubtitle={(nutrientsObj["Energy"]["amount"]).toString()} bottomDivider />
+              <ListItem key={3} title={"Sodium: "} rightSubtitleStyle={{ color:(nutrientsObj["Sodium, Na"]["amount"] > (2300*0.2) ? "red" : (nutrientsObj["Sodium, Na"]["amount"] < (2300*0.05) ? 'green' : 'orange'))}} rightSubtitle={(nutrientsObj["Sodium, Na"]["amount"]).toString()} bottomDivider />
+              <ListItem key={4} title={"Other Nutrients: "} bottomDivider />
               {Object.keys(nutrientsObj).map((nutrientName, index) => {
                 if (nutrientName != "Energy" || nutrientName != "Sodium, Na") {
-                  return (<ListItem key={index} titleStyle={{ color: 'grey', fontSize: 16 }} rightSubtitleStyle={{ color: 'grey', fontSize: 10 }} title={nutrientName} rightSubtitle={nutrientsObj[nutrientName]["amount"] + nutrientsObj[nutrientName]["unit"]} />)
+                  return (<ListItem key={index} titleStyle={{ color: 'grey', fontSize: 14 }} rightSubtitleStyle={{ color: 'grey', fontSize: 14 }} title={nutrientName} rightSubtitle={(nutrientsObj[nutrientName]["amount"]).toFixed(2) + nutrientsObj[nutrientName]["unit"]} />)
                 }
               })}
               <View style={{ flex: 1, flexDirection: 'row-reverse', padding: 10 }}>
