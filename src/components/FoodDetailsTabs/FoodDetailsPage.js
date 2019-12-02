@@ -86,8 +86,8 @@ export default FoodDetailsPage = (props) => {
                 </View>
               </View>
               {/* TODO: Fix the high/low regulations for sodium and calories - everything is base on "per seving" which we don't have */}
-              <ListItem key={2} title={"Calories: "} rightSubtitleStyle={{ color:(nutrientsObj["Energy"]["amount"] > (2000*0.2) ? "red" : (nutrientsObj["Energy"]["amount"] < (2000*0.05) ? 'green' : 'orange'))}} rightSubtitle={(nutrientsObj["Energy"]["amount"]).toString()} bottomDivider />
-              <ListItem key={3} title={"Sodium: "} rightSubtitleStyle={{ color:(nutrientsObj["Sodium, Na"]["amount"] > (2300*0.2) ? "red" : (nutrientsObj["Sodium, Na"]["amount"] < (2300*0.05) ? 'green' : 'orange'))}} rightSubtitle={(nutrientsObj["Sodium, Na"]["amount"]).toString()} bottomDivider />
+              <ListItem key={2} title={"Calories"} rightSubtitleStyle={{ color:(nutrientsObj["Energy"]["amount"] > (2000*0.2) ? "red" : (nutrientsObj["Energy"]["amount"] < (2000*0.05) ? 'green' : 'orange'))}} rightSubtitle={(nutrientsObj["Energy"]["amount"]).toString()} bottomDivider />
+              <ListItem key={3} title={"Sodium"} rightSubtitleStyle={{ color:(nutrientsObj["Sodium, Na"]["amount"] > (2300*0.2) ? "red" : (nutrientsObj["Sodium, Na"]["amount"] < (2300*0.05) ? 'green' : 'orange'))}} rightSubtitle={(nutrientsObj["Sodium, Na"]["amount"]).toString()} bottomDivider />
               <AccordionItem title={"Other Nutrients"} data={nutrientsObj} />
               <View style={{ height:30, flex: 1, flexDirection: 'row-reverse', paddingRight:10 }}>
                 <Button title="Log" onPress={() => storeFoodLog(foodDetails, servingSize, servingAmount, nutrientsObj)} />

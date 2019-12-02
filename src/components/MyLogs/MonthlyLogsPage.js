@@ -60,14 +60,9 @@ export default MonthlyLogsPage = (props) => {
                 <View>
                     <Card title={nutritionCardHeader()}>
                         <View>
-                            <ListItem key={2} title={"Calories: "} rightSubtitleStyle={{ color:(monthlyLogs["totals"]["Energy"]["amount"] > (2000*daysInMonths[month]) ? "red" : "green")}} rightSubtitle={(monthlyLogs["totals"]["Energy"]["amount"]).toString()} bottomDivider />
-                            <ListItem key={3} title={"Sodium: "} rightSubtitleStyle={{ color:(monthlyLogs["totals"]["Sodium, Na"]["amount"] > (2300*daysInMonths[month]) ? "red" : "green")}} rightSubtitle={(monthlyLogs["totals"]["Sodium, Na"]["amount"]).toString()} bottomDivider />
-                            <ListItem key={4} title={"Other Nutrients: "} bottomDivider />
-                            {Object.keys(monthlyLogs["totals"]).map((nutrientName, index) => {
-                                if (nutrientName != "Energy" || nutrientName != "Sodium, Na") {
-                                    return (<ListItem key={index} titleStyle={{ color: 'grey', fontSize: 14 }} rightSubtitleStyle={{ color: 'grey', fontSize: 14 }} title={nutrientName} rightSubtitle={(monthlyLogs["totals"][nutrientName]["amount"]).toFixed(2) + monthlyLogs["totals"][nutrientName]["unit"]} />)
-                                }
-                            })}
+                            <ListItem key={2} title={"Calories"} rightSubtitleStyle={{ color:(monthlyLogs["totals"]["Energy"]["amount"] > (2000*daysInMonths[month]) ? "red" : "green")}} rightSubtitle={(monthlyLogs["totals"]["Energy"]["amount"]).toString()} bottomDivider />
+                            <ListItem key={3} title={"Sodium"} rightSubtitleStyle={{ color:(monthlyLogs["totals"]["Sodium, Na"]["amount"] > (2300*daysInMonths[month]) ? "red" : "green")}} rightSubtitle={(monthlyLogs["totals"]["Sodium, Na"]["amount"]).toString()} bottomDivider />
+                            <AccordionItem title={"Other Nutrients"} data={monthlyLogs["totals"]} />
                         </View>
                     </Card>
                 </View>);
@@ -127,5 +122,4 @@ const styles = StyleSheet.create({
 
 // MonthlyLogs TODOs:
 // TODO: add a dropdown to switch the month (like calendar view)
-// TODO: color the sodium by if they went over the monthly limit (2300*number of days in month)
 // TODO: show a detailed view where they can see the month broken down by week (just calories and sodium)

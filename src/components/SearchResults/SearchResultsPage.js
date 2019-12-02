@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, View, FlatList } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import SearchListItem from './SearchListItem';
+import { Title } from 'native-base';
 
 export default SearchResultsPage = (props) => {
     // Get the foodItems array that was passed from SearchResultsPage
@@ -25,6 +26,10 @@ export default SearchResultsPage = (props) => {
 
     return (
         <View style={styles.container}>
+            <View style={{flexDirection:'row', justifyContent:'space-between', borderBottomColor:"lightgray", borderBottomWidth:1, paddingTop:16, paddingBottom:16, paddingLeft:10, paddingRight:10}}>
+                <Title>Search Results</Title>
+                <Title>Sodium per 100g</Title>
+            </View>
             <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
                 <FlatList
                     data = {foodItems}
@@ -32,7 +37,7 @@ export default SearchResultsPage = (props) => {
                     renderItem={({item}) =>
                         <SearchListItem navigation={navigation} item={item}></SearchListItem>
                     }
-                    ListHeaderComponent={<ListItem bottomDivider stlye={styles.sectionHeader} title="Search Results                                Sodium per 100g"></ListItem>}
+                    // ListHeaderComponent={<ListItem bottomDivider stlye={styles.sectionHeader} title="Search Results                                Sodium per 100g"></ListItem>}
                     keyExtractor={(item, index) => index.toString()}
                     stickyHeaderIndices={[0]}
                 />
@@ -51,7 +56,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     contentContainer: {
-        paddingTop: 30,
+        // paddingTop: 30,
     },
     sectionHeader: {
         paddingTop: 2,
@@ -70,7 +75,3 @@ const styles = StyleSheet.create({
 });
 
 // Search Results Page TODOs:
-// TODO: Style the 'Search Results' section header
-//      - make it stand out from other list items (don't think styles is actually doing anything)
-//      - make it sticky (stickyHeaderIndices in flatList not working)
-//      - Add the "Sodium per 100g" as a right subtitle or something (width of screen is different on every phone)

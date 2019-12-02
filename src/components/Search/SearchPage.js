@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollView, StyleSheet, Text, View, FlatList } from 'react-native';
+import { Title } from 'native-base';
 
 import SwipeView from 'react-native-swipeview';
 import Searchbar from "./Searchbar";
@@ -81,6 +82,9 @@ export default SearchPage = (props) => {
 	return (
         <View style={styles.container}>
           <Searchbar searchItem={this.searchItem}/>
+		  <View style={{borderBottomColor:"lightgray", borderBottomWidth:1, paddingBottom:16}}>
+		  	<Title style={{paddingTop:16}}>Recently Searched Items</Title>
+		  </View>
 
           {/* RECENTLY SEARCHED */}
           <ScrollView style={styles.container}
@@ -96,7 +100,7 @@ export default SearchPage = (props) => {
 							disableSwipeToRight = {true}
 							// swipeToOpenPercent = {50}
 							renderVisibleContent = {() => 
-								<ListItem title={item.searchedText} onPress={() => searchItem(item.searchedText)}/>         
+								<ListItem title={item.searchedText} onPress={() => searchItem(item.searchedText)} bottomDivider chevron/>         
 							}
 
 							renderRightView={() => (
@@ -126,7 +130,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#fff',
 	},
 	contentContainer: {
-		paddingTop: 30,
+		// paddingTop: 30,
 	},
 	welcomeContainer: {
 		alignItems: 'center',
@@ -149,6 +153,5 @@ const styles = StyleSheet.create({
 
 
 // SearchPage TODOs:
-// TODO: Implement removing recently searched item
 // TODO: Implement FlatListItemSeparator and add "ItemSeparatorComponent = {this.FlatListItemSeparator}" to FlatList props
 // TODO: Make the UI look good

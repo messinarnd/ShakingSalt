@@ -10,6 +10,8 @@ import { retrieveFoodLog } from '../../services/LocalStorageService';
 
 
 export default MyLogsTabsPage = (props) => {
+	const { navigation } = props;
+
 	const [isLoading, setLoading] = useState(true);
 	const [foodLogsObj, setFoodLogsObj] = useState([]);
 	
@@ -32,7 +34,7 @@ export default MyLogsTabsPage = (props) => {
 					</View>)
 				: (<Tabs>
                         <Tab heading="Day">
-                            <DailyLogsPage foodLogs={foodLogsObj} />
+                            <DailyLogsPage navigation={navigation} foodLogs={foodLogsObj} />
                         </Tab>
                         <Tab heading="Month">
                             <MonthlyLogsPage foodLogs={foodLogsObj} />

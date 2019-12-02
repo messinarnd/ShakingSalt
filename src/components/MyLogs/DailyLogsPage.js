@@ -5,15 +5,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { Title } from 'native-base';
 
 import AccordionItem from "../Accordion/AccordionItem";
+import DetailedLogPage from './DetailedLogPage';
 import { retrieveFoodLog } from '../../services/LocalStorageService';
 
 export default DailyLogsPage = (props) => {
-    const [isRefreshing, setRefreshing] = useState(false);
-	
-    const { foodLogs } = props;
+    const { foodLogs, navigation } = props;
     
     const date = new Date();
 
+    const [isRefreshing, setRefreshing] = useState(false);
     const [logs, setLogs] = useState(foodLogs);
     const [year, setYear] = useState(date.getFullYear());
     const [month, setMonth] = useState(twoDigitFormat(date.getMonth()+1));
@@ -78,9 +78,14 @@ export default DailyLogsPage = (props) => {
             return (<View>
                 <Card title={nutritionCardHeader()}>
                     <View>
-                        <ListItem key={2} title={"Calories: "} rightSubtitleStyle={{ color:(dailyLogs["totals"]["Energy"]["amount"] > 2000 ? "red" : "green")}} rightSubtitle={(dailyLogs["totals"]["Energy"]["amount"]).toString()} bottomDivider />
-                        <ListItem key={3} title={"Sodium: "} rightSubtitleStyle={{ color:(dailyLogs["totals"]["Sodium, Na"]["amount"] > 2300 ? "red" : "green")}} rightSubtitle={(dailyLogs["totals"]["Sodium, Na"]["amount"]).toString()} bottomDivider />
-                        <ListItem key={4} title={"View Detailed Logs"} bottomDivider chevron={{color:"gray"}} onPress={() => {}}/>
+                        <ListItem key={2} title={"Calories"} rightSubtitleStyle={{ color:(dailyLogs["totals"]["Energy"]["amount"] > 2000 ? "red" : "green")}} rightSubtitle={(dailyLogs["totals"]["Energy"]["amount"]).toString()} bottomDivider />
+                        <ListItem key={3} title={"Sodium"} rightSubtitleStyle={{ color:(dailyLogs["totals"]["Sodium, Na"]["amount"] > 2300 ? "red" : "green")}} rightSubtitle={(dailyLogs["totals"]["Sodium, Na"]["amount"]).toString()} bottomDivider />
+                        <ListItem key={4} title={"View Detailed Logs"} bottomDivider chevron={{color:"gray"}} onPress={() => {
+                            console.log("pushed");
+                            navigation.push('DetailedLogPage', {
+                                logsToDisplay: dailyLogs
+                            });
+                        }}/>
                         <AccordionItem title={"Other Nutrients"} data={dailyLogs["totals"]} />
                     </View>
                 </Card>
@@ -141,5 +146,4 @@ const styles = StyleSheet.create({
 
 // DailyLogs TODOs:
 // TODO: add a dropdown to switch the day (like calendar view)
-// TODO: color the sodium by if they went over the daily limit
 // TODO: show a detailed view where they can see individual logs rather than just and overview

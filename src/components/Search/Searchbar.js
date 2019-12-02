@@ -14,7 +14,7 @@ export default Searchbar = (props) => {
 
 	return (
 		<SearchBar
-		  placeholder="Type Here..."
+		  placeholder="Search for a Food Item..."
 		  containerStyle="TextInput"
 		  onChangeText={this.updateSearch}
 		  onSubmitEditing={this.searchInSearchPage}

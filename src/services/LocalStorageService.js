@@ -267,7 +267,8 @@ twoDigitFormat = (num) => {
 
 createLog = (foodDetails, servingSize, servingAmount, nutrientsObj, formattedDateTime) => {
 	var log = {
-        "type": "logs",
+		'type': 'logs',
+		'description': foodDetails.description,
 		'formattedTime':formattedDateTime,
 		// logTimeStamp: formattedDateTime,
 		'fdcId': foodDetails.fdcId,

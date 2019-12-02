@@ -8,6 +8,7 @@ import SearchPage from "../components/Search/SearchPage";
 import SearchResultsPage from "../components/SearchResults/SearchResultsPage";
 import FoodDetailsTabsPage from "../components/FoodDetailsTabs/FoodDetailsTabsPage";
 import MyLogsTabsPage from "../components/MyLogs/MyLogsTabsPage";
+import DetailedLogPage from '../components/MyLogs/DetailedLogPage';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -38,7 +39,8 @@ SearchStack.path = '';
 const MyLogsStack = createStackNavigator(
   {
     // MyLogs: MyLogsPage,
-    MyLogs: MyLogsTabsPage
+    MyLogs: MyLogsTabsPage,
+    DetailedLogPage: DetailedLogPage
   },
   config
 );
