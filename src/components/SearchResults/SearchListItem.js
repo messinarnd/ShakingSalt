@@ -4,32 +4,32 @@ import { getFoodDetailsEndpoint, axiosConfig } from '../../services/USDAFoodServ
 import { ListItem } from 'react-native-elements';
 const axios = require("axios");
 
+console.disableYellowBox = true;
+
 export default SearchListItem = (props) => {
     const { item, navigation } = props;
 
     // Get the sodium level for each item (not included in original API call so have to make separate one for each item)
     // If adding all food nutrients, it really frees up the need for a lot of future API calls
     const [sodiumLevel, setSodiumLevel] = useState(0);
-    useEffect(() => {
-        axios.get(getFoodDetailsEndpoint(item.fdcId), axiosConfig).then((response) => {
-            let sodLvl = response.data.foodNutrients.reduce((sodiumContent, thisNutrient) => {
-                let nutrientName = thisNutrient.nutrient.name;
-                if (nutrientName == "Sodium, Na") {
-                    return sodiumContent + parseInt(thisNutrient.amount);
-                } else {
-                    return sodiumContent;
-                }
-            }, 0);
-            setSodiumLevel(sodLvl);
-            return sodLvl;
-        }).then((sodLvl) => {
-            let updatedItem = item;
-            updatedItem["sodiumLevel"] = sodLvl;
-            global.foodItemsWithNutrients.push(updatedItem);
-        }).catch((err) => {
-            console.log(err);
-        });
-    }, []);
+    axios.get(getFoodDetailsEndpoint(item.fdcId), axiosConfig).then((response) => {
+        let sodLvl = response.data.foodNutrients.reduce((sodiumContent, thisNutrient) => {
+            let nutrientName = thisNutrient.nutrient.name;
+            if (nutrientName == "Sodium, Na") {
+                return sodiumContent + parseInt(thisNutrient.amount);
+            } else {
+                return sodiumContent;
+            }
+        }, 0);
+        setSodiumLevel(sodLvl);
+        return sodLvl;
+    }).then((sodLvl) => {
+        let updatedItem = item;
+        updatedItem["sodiumLevel"] = sodLvl;
+        global.foodItemsWithNutrients.push(updatedItem);
+    }).catch((err) => {
+        console.log(err);
+    });
 
     getFoodDetails = (fdcId, sodLvl) => {
         axios.get(getFoodDetailsEndpoint(fdcId), axiosConfig).then((response) => {

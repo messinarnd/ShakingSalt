@@ -38,7 +38,7 @@ export default DetailedLogPage = (props) => {
 }
 
 DetailedLogPage.navigationOptions = {
-    title:'DetailedLogPage'
+    title:'Log Details'
 }
 
 const styles = StyleSheet.create({

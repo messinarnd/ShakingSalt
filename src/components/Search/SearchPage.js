@@ -62,8 +62,8 @@ export default SearchPage = (props) => {
 	// For when there's no recently searched items (used by FlatList component)
 	showEmptyComponent = () => {
 		return (
-			<View>
-				<Text style={styles.emptyMessageStyle}>No Recent Searches!</Text>
+			<View style={{flex:1, padding:10, flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
+				<Text style={styles.emptyMessageStyle}>No recent searches! Try searching above!</Text>
 			</View>
 		)
 	}
